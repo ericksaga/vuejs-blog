@@ -1,0 +1,40 @@
+{
+    "users" : {
+        "id": "Integer",
+        "email": "String",
+        "password": "String",
+        "username": "String",
+        "firstName": "String",
+        "lastName": "String",
+        "description": "String",
+        "avatar": "Blob",
+        "private": "Boolean"
+    },
+    "posts": {
+        "id": "Integer",
+        "authorId": "Integer",
+        "title": "String",
+        "message": "String",
+        "date": "Date",
+        "edited": "Boolean",
+        "drafted": "Boolean",
+        "deleted": "Boolean",
+        "likes": [
+            {
+                "userId": "Integer"
+            }
+        ]
+    },
+    "comments": {
+        "id": "Integer",
+        "authorId": "Integer",
+        "commentId": "Integer",
+        "date": "Date",
+        "message": "String",
+        "likes": [
+            {
+                "userId": "Integer"
+            }
+        ]
+    }
+}
