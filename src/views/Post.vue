@@ -1,8 +1,10 @@
 <template>
 <div class="post container">
     <div class="row">
-        <h1> {{ post.title }} </h1>
-        <!-- <i class="bi bi-x"></i> !-->
+        <div class="col-12">
+            <h1> {{ post.title }} </h1>
+            <i class="bi bi-x-square text-end"></i>
+        </div>
     </div>
     <div class="row">
         <div class="col-4"> 

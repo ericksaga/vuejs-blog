@@ -10,15 +10,15 @@
             <div class="col-8">
                 <div v-if="!edit">
                     <div class="text-end">
-                        <i class="bi bi-x-circle"></i>
-                        <i class="bi bi-pencil-square"></i>
+                        <i class="bi bi-x-square"></i>
+                        <i class="bi bi-pencil-square" @click="edit=true"></i>
                     </div>
-                    <p>{{ comment.message }}</p>
+                    <div v-html="comment.message"></div>
                 </div>
                 <div v-else> 
-                    <vue-editor id="commentEditor" v-model="comment.message"></vue-editor>
-                    <button type="button" class="btn btn-primary" @click="submitComment">Crear</button>
-                    <button type="button" class="btn btn-danger" @click="clearEditor">Cancelar</button>
+                    <vue-editor id="commentEditor" v-model="updatedComment"></vue-editor>
+                    <button type="button" class="btn btn-primary" @click="updateComment">Actualizar</button>
+                    <button type="button" class="btn btn-danger" @click="cancelModification">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -44,7 +44,8 @@ export default {
     data: function() {
         return {
             author: {},
-            edit: false
+            edit: false,
+            updatedComment: ''
         }
     },
     computed: {
@@ -53,23 +54,28 @@ export default {
         }
     },
     methods: {
-        clearEditor: function() {
-            this.newComment = ''
-        },
-        submitComment: function() {
+        updateComment: function() {
             fetch("http://localhost:3000/comments", {
-                method:'Post',
+                method:'Put',
                 body: JSON.stringify({
+                    id: this.comment.id,
                     authorId: 1,
                     postId: this.postId,
                     creationDate: Date().toUTCString,
-                    message: this.newComment,
+                    message: this.updatedComment,
                     likes: []
                 })
+            }).then(() => {
+                this.comment.message = this.updatedComment
             })
+        },
+        cancelModification: function() {
+            this.edit = false;
+            this.updatedComment = this.comment.message
         }
     },
     beforeMount: function() {
+        this.updatedComment = this.comment.message
         fetch(`http://localhost:3000/users?id=${this.comment.authorId}`).then((response) => {
             response.json().then((resUser) => {
                 this.author = resUser[0];
