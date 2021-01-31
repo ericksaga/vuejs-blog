@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "faker": "^5.2.0",
+    "lodash": "^4.17.20",
     "vue": "^2.6.11",
     "vue-router": "^3.5.1",
+    "vue2-editor": "^2.10.2",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
