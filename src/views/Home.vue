@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <button class="btn btn-primary" @click="testModal">test modal</button>
     <home-posts v-for="post in homePosts" 
     v-bind:key="post.id" 
     v-bind:post="post"/>
@@ -10,6 +11,7 @@
 // @ is an alias to /src
 import { mapActions, mapGetters } from 'vuex'
 import HomePosts from '../components/HomePosts.vue'
+import LoginModalVue from './LoginModal.vue'
 
 export default {
   name: 'Home',
@@ -20,6 +22,9 @@ export default {
     ...mapActions([
       'fetchPosts'
     ]),
+    testModal: function() {
+      this.$modal.show(LoginModalVue)
+    }
   },
   computed: {
     ...mapGetters([
