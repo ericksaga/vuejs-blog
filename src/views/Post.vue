@@ -1,7 +1,7 @@
 <template>
 <div class="post container">
     <div class="row">
-        <i class="bi bi-x-square text-end"></i>
+        <i class="bi bi-x-square text-end" v-if="getUser"></i>
         <h1> {{ post.title }} </h1>
     </div>
     <div class="row">
@@ -12,7 +12,7 @@
             <p>{{ post.creationDate }}</p>
         </div>
         <div class="col-8"> 
-            <p>{{ post.message }}</p>
+            <div v-html="post.message"/>
         </div>
     </div>
     <p v-if="post.edited">edited</p>
@@ -25,26 +25,34 @@
             <i class="bi bi-chat-left-dots"> {{ commentsCount }}</i>
         </div>
     </div>
-    <h2>Agregar comentario</h2>
-    <vue-editor id="postComment" v-model="newComment"></vue-editor>
-    <div class="row">
-        <div class="d-grid gap-2 col-6">
-            <button type="button" class="btn btn-primary" @click="submitComment">Crear</button>
+    <div v-if="post.acceptComments">
+        <h2>Agregar comentario</h2>
+        <div v-if="getUser">
+            <vue-editor id="postComment" v-model="newComment"></vue-editor>
+            <div class="row">
+                <div class="d-grid gap-2 col-6">
+                    <button type="button" class="btn btn-primary" @click="submitComment">Crear</button>
+                </div>
+                <div class="d-grid gap-2 col-6">
+                    <button type="button" class="btn btn-danger" @click="clearEditor">Cancelar</button>
+                </div>
+            </div>
         </div>
-        <div class="d-grid gap-2 col-6">
-            <button type="button" class="btn btn-danger" @click="clearEditor">Cancelar</button>
+        <div v-else>
+            <p>Ingrese a su cuenta para poder comentar</p>
         </div>
+        <h2>Comentarios</h2>
+        <comment v-for="uComment in comments" 
+        :comment="uComment"
+        :key="uComment.id"/>
     </div>
-      <h2>Comentarios</h2>
-      <comment v-for="uComment in comments" 
-      :comment="uComment"
-      :key="uComment.id"/>
   </div>
 </template>
 
 <script>
 import Comment from './Comment.vue';
 import { VueEditor } from 'vue2-editor'
+import { mapGetters } from 'vuex';
 export default {
   components: { 
       Comment,
@@ -72,7 +80,7 @@ export default {
             body: JSON.stringify({
                 authorId: 1,
                 postId: this.postId,
-                creationDate: Date().toUTCString,
+                creationDate: new Date().toISOString(),
                 message: this.newComment,
                 likes: []
             })
@@ -80,6 +88,9 @@ export default {
       }
   },
   computed: {
+      ...mapGetters([
+          'getUser'
+      ]),
       likesCount: function() {
           return this.post.likes.length
       },

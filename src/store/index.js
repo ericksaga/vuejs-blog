@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     posts: [],
-    user: {},
+    user: '',
   },
   getters: {
     homePosts: state => {
@@ -14,11 +14,17 @@ export default new Vuex.Store({
     },
     getPost(state, payload) {
       return state.posts.find(post => post.id == payload.id)
+    },
+    getUser: state => {
+      return state.user
     }
   },
   mutations: {
     uploadPosts(state, payload) {
       state.posts = payload.posts
+    },
+    updateUser(state, payload) {
+      state.user = payload.user
     }
   },
   actions: {
@@ -30,9 +36,36 @@ export default new Vuex.Store({
           })
         })
       }, () => {
-
+        //in case of fail
       })
+    },
+    logIn(context, args) {
+      return new Promise( function(resolve, reject) {
+        fetch(`http://localhost:3000/users?email=${args.email}`).then((response) => {
+          response.json().then((resUser) => {
+            if(resUser[0]){
+              fetch(`http://localhost:3000/pass?id=${resUser[0].id}&pass=${args.pass}`).then((passResponse) => {
+                passResponse.json().then((res) => {
+                  if(res[0]) {
+                    console.log(resUser)
+                    context.commit('updateUser', {
+                      user: resUser[0]
+                    })
+                    resolve('')
+                  } else {
+                    reject('Contraseña incorrecta')
+                  }
+                })
+              })
+            } else {
+              reject('El usuario no fue encontrado')
+            }
+          })
+        })
+      })
+      
     }
+    
   },
   modules: {
   }

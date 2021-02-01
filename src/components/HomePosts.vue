@@ -25,7 +25,7 @@
                 </router-link>
             </div>
             <div class="col-8"> 
-                <p>{{ post.message }}</p>
+                <div v-html="post.message"/>
             </div>
         </div>
         <p v-if="post.edited">edited</p>

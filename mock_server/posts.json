@@ -1,0 +1,99 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "a@gmail.com",
+      "username": "a",
+      "firstName": "a",
+      "lastName": "a",
+      "description": "this is a avatar :D",
+      "private": false
+    }
+  ],
+  "pass": [
+    {
+      "id": 1,
+      "pass": "123456789"
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "authorId": 1,
+      "title": "Awesome title",
+      "message": "The not so awesome body",
+      "creationDate": "2021/01/30",
+      "edited": false,
+      "drafted": false,
+      "deleted": false,
+      "acceptComments": true,
+      "likes": [
+        {
+          "userId": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "authorId": 1,
+      "title": "String2",
+      "message": "String2",
+      "creationDate": "2021/01/30",
+      "edited": false,
+      "drafted": false,
+      "deleted": false,
+      "acceptComments": true,
+      "likes": []
+    },
+    {
+      "title": "THE TITLE",
+      "message": "<p><strong>THE AWESOME POST</strong></p>",
+      "creationDate": "Mon, 01 Feb 2021 17:36:52 GMT",
+      "edited": false,
+      "deleted": false,
+      "drafted":false,
+      "acceptComments": true,
+      "likes": [],
+      "authorId": 1,
+      "id": 3
+    },
+    {
+      "authorId": 1,
+      "title": "okok",
+      "message": "<p>okok</p>",
+      "creationDate": "Mon, 01 Feb 2021 17:40:01 GMT",
+      "edited": false,
+      "deleted": false,
+      "drafted": false,
+      "acceptComments": true,
+      "likes": [],
+      "id": 4
+    },
+    {
+      "authorId": 1,
+      "title": "another test post",
+      "message": "<p>test post</p>",
+      "creationDate": "2021-02-01T17:59:04.865Z",
+      "edited": false,
+      "deleted": false,
+      "drafted": false,
+      "acceptComments": true,
+      "likes": [],
+      "id": 5
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "authorId": 1,
+      "postId": 2,
+      "creationDate": "2021/01/30",
+      "message": "An awesome comment for an average post",
+      "likes": [
+        {
+          "userId": 1
+        }
+      ]
+    }
+  ]
+}

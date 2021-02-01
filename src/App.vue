@@ -1,13 +1,51 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div class="container">
+      <div class="row justify-content-between">
+        <div v-if="!getUser" class="col-3 d-grid gap-2">
+          <button class="btn btn-light" @click="openModal">login</button>
+        </div>
+        <div v-else class="col-3">
+          {{ getUser.username }}
+        </div>
+        <div class="col-6">
+          <router-link to='/'>Inicio</router-link>
+        </div>
+        <div class="col-3">
+          <router-link v-if="getUser" to='/createPost'>Crear un post</router-link>
+        </div>
+      </div>
     </div>
     <router-view/>
+    <modal name="login-register">
+      <login-modal/>
+    </modal>
   </div>
 </template>
-
+<script>
+import { mapGetters } from 'vuex'
+import LoginModal from './views/LoginModal.vue'
+export default {
+  components: { LoginModal },
+  methods: {
+    openModal: function() {
+      this.$modal.show('login-register')
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'getUser'
+    ])
+  },
+  watch: {
+    getUser: function() {
+      if(this.getUser) {
+        this.$modal.hide('login-register')
+      }
+    }
+  }
+}
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

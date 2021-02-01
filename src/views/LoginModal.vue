@@ -4,9 +4,9 @@
             <div class="col-6">
                 <h1>Login</h1>
                 <ValidationObserver v-slot="{ invalid }">
-                    <form @submit.prevent="logIn">
+                    <form @submit.prevent="submitLogin({'email':email, 'pass':password})">
                         <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required|email">
-                            <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Email" v-model="username">
+                            <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Email" v-model="email">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
                         </ValidationProvider>
                         <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
@@ -19,6 +19,7 @@
                                 Recuerdame
                             </label>
                         </div>
+                        <div class="text-danger">{{loginError}}</div>
                         <button type="submit" :disabled="invalid" class="btn btn-primary">Entrar</button>
                     </form>
                 </ValidationObserver>
@@ -34,17 +35,25 @@
 // @ is an alias to /src
 import RegisterModal from '../views/RegisterModal.vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { mapActions } from 'vuex'
 export default {
   name: 'login-modal',
   components: {
     RegisterModal,
     ValidationObserver,
     ValidationProvider
-    
   },
   methods: {
-    logIn: function() {
-
+    ...mapActions([
+        'logIn'
+    ]),
+    submitLogin: function(user) {
+        this.logIn(user).then(() => {
+            this.loginError = ''
+        }, (error) => {
+            console.log(error)
+            this.loginError = error
+        })
     }
   },
   computed: {
@@ -52,13 +61,11 @@ export default {
   },
   data: function() {
     return {
-      username: '',
+      email: '',
       password: '',
-      rememberMe: false
+      rememberMe: false,
+      loginError: ''
     }
-  },
-  beforeMount() {
-    
   }
 }
 </script>

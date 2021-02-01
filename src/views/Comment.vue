@@ -15,7 +15,7 @@
                     </div>
                     <div v-html="comment.message"></div>
                 </div>
-                <div v-else> 
+                <div v-else-if="getUser.id == comment.authorId"> 
                     <vue-editor id="commentEditor" v-model="updatedComment"></vue-editor>
                     <button type="button" class="btn btn-primary" @click="updateComment">Actualizar</button>
                     <button type="button" class="btn btn-danger" @click="cancelModification">Cancelar</button>
@@ -33,6 +33,7 @@
 
 <script>
 import { VueEditor } from 'vue2-editor'
+import { mapGetters } from 'vuex'
 export default {
     components: {
         VueEditor
@@ -49,6 +50,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'getUser'
+        ]),
         likesCount: function() {
             return this.comment.likes.length
         }
