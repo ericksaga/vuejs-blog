@@ -4,7 +4,7 @@
         <div class ="row">  
             <div class="col-12">
                 <ValidationObserver v-slot="{ invalid }">
-                    <form @submit.prevent="submitPost">
+                    <form>
                         <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Titulo" v-model="title">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
@@ -20,7 +20,7 @@
                             Aceptar comentarios
                         </label>
                         <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
-                        <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser">Borrador</button>
+                        <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser" @click="draftPost">Borrador</button>
                         <button class="btn btn-danger" type="reset">Cancelar</button>
                     </form>
                 </ValidationObserver>
