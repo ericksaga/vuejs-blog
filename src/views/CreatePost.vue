@@ -15,6 +15,10 @@
                             <froala :tag="'textarea'" :config="config" v-model="postBody"></froala>
                         </div>
                         <froalaView v-else v-model="postBody"></froalaView>
+                        <input class="form-check-input" type="checkbox" v-model="acceptComments" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Aceptar comentarios
+                        </label>
                         <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
                         <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser">Borrador</button>
                         <button class="btn btn-danger" type="reset">Cancelar</button>
@@ -45,7 +49,8 @@ export default {
             },
             postBody: '',
             title: '',
-            preview: false
+            preview: false,
+            acceptComments: false
         }
     },
     methods: {
@@ -63,6 +68,7 @@ export default {
                     edited: false,
                     drafted: false,
                     deleted: false,
+                    acceptComments: this.acceptComments,
                     likes: []
                 })
             })
@@ -81,6 +87,7 @@ export default {
                     edited: false,
                     deleted: false,
                     drafted: true,
+                    acceptComments: this.acceptComments,
                     likes: []
                 })
             })
