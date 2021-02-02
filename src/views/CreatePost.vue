@@ -19,9 +19,12 @@
                         <label class="form-check-label" for="flexCheckDefault">
                             Aceptar comentarios
                         </label>
-                        <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
-                        <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser" @click="draftPost">Borrador</button>
-                        <button class="btn btn-danger" type="reset">Cancelar</button>
+                        <br>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
+                            <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser" @click="draftPost">Borrador</button>
+                            <button class="btn btn-danger" type="reset">Cancelar</button>
+                        </div>
                     </form>
                 </ValidationObserver>
             </div>
@@ -71,6 +74,16 @@ export default {
                     acceptComments: this.acceptComments,
                     likes: []
                 })
+            }).then(() => {
+                this.$toast.success({
+                    title:'Exito',
+                    message:'El post ha sido publicado.'
+                })
+            }, () => {
+                this.$toast.error({
+                    title:'Error',
+                    message:'El post no se ha podido publicar.'
+                })
             })
         },
         draftPost: function() {
@@ -90,6 +103,16 @@ export default {
                     acceptComments: this.acceptComments,
                     likes: []
                 })
+            }).then(() => {
+                this.$toast.success({
+                    title:'Exito',
+                    message:'El post se ha guardado.'
+                })
+            }, () => {
+                this.$toast.error({
+                    title:'Error',
+                    message:'El post no se ha podido guardar.'
+                })
             })
         }
     },
@@ -97,6 +120,14 @@ export default {
         ...mapGetters([
             'getUser'
         ]),
+    },
+    mounted() {
+        if(!this.getUser) {
+            this.$toast.error({
+                title: 'Error',
+                message: 'Debe registrarse antes de escribir un post'
+            })
+        }
     }
 }
 </script>

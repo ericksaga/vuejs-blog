@@ -51,7 +51,7 @@
       "creationDate": "Mon, 01 Feb 2021 17:36:52 GMT",
       "edited": false,
       "deleted": false,
-      "drafted":false,
+      "drafted": false,
       "acceptComments": true,
       "likes": [],
       "authorId": 1,
@@ -80,6 +80,42 @@
       "acceptComments": true,
       "likes": [],
       "id": 5
+    },
+    {
+      "authorId": 1,
+      "title": "ola",
+      "message": "<p>Un saludo clasico, si si si</p>",
+      "creationDate": "2021-02-02T15:11:53.207Z",
+      "edited": false,
+      "drafted": false,
+      "deleted": false,
+      "acceptComments": false,
+      "likes": [],
+      "id": 6
+    },
+    {
+      "authorId": 1,
+      "title": "test",
+      "message": "<p>testing</p>",
+      "creationDate": "2021-02-02T15:13:16.976Z",
+      "edited": false,
+      "drafted": false,
+      "deleted": false,
+      "acceptComments": false,
+      "likes": [],
+      "id": 7
+    },
+    {
+      "authorId": 1,
+      "title": "another test",
+      "message": "<p>just test, for testing reasons...</p>",
+      "creationDate": "2021-02-02T15:14:18.164Z",
+      "edited": false,
+      "drafted": false,
+      "deleted": false,
+      "acceptComments": false,
+      "likes": [],
+      "id": 8
     }
   ],
   "comments": [

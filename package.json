@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "cxlt-vue2-toastr": "^1.1.1",
     "faker": "^5.2.0",
     "lodash": "^4.17.20",
     "vee-validate": "3.4.5",
