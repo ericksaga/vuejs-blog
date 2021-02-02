@@ -13,7 +13,7 @@
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Password" v-model="password">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
                         </ValidationProvider>
-                        <div class="form-check">
+                        <div class="form-check text-start">
                             <input class="form-check-input" type="checkbox" v-model="rememberMe" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Recuerdame

@@ -1,7 +1,7 @@
 <template>
 <div class="post container">
     <div class="row">
-        <i class="bi bi-x-square text-end" v-if="getUser"></i>
+        <i class="bi bi-x-square text-end" v-if="getUser.id==post.authorId"></i>
         <h1> {{ post.title }} </h1>
     </div>
     <div class="row">
@@ -76,12 +76,38 @@ export default {
       submitComment: function() {
         fetch("http://localhost:3000/comments", {
             method:'Post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
-                authorId: 1,
-                postId: this.postId,
+                authorId: +this.getUser.id,
+                postId: +this.postId,
                 creationDate: new Date().toISOString(),
                 message: this.newComment,
                 likes: []
+            })
+        }).then(() => {
+            this.fetchPostComments()
+        })
+      },
+      fetchPostComments: function(){
+        fetch(`http://localhost:3000/comments?postId=${this.postId}`).then((response) => {
+            response.json().then((resComments) => {
+                this.comments = resComments
+            })
+        })
+      },
+      fetchPostLikes: function() {
+        fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
+            response.json().then((resLikes) => {
+                this.likes = resLikes
+            })
+        })
+      },
+      fetchPostAuthor: function() {
+        fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
+            response.json().then((resUser) => {
+                this.author = resUser[0]
             })
         })
       }
@@ -101,21 +127,9 @@ export default {
     fetch(`http://localhost:3000/posts?id=${this.postId}`).then((response) => {
         response.json().then((resPost) => {
             this.post = resPost[0]
-            fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
-                response.json().then((resUser) => {
-                    this.author = resUser[0]
-                })
-            })
-            fetch(`http://localhost:3000/comments?postId=${this.postId}`).then((response) => {
-                response.json().then((resComments) => {
-                    this.comments = resComments
-                })
-            })
-            fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
-                response.json().then((resLikes) => {
-                    this.likes = resLikes
-                })
-            })
+            this.fetchPostAuthor()
+            this.fetchPostComments()
+            this.fetchPostLikes()
         })
     })
   }

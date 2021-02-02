@@ -9,18 +9,19 @@
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Titulo" v-model="title">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
                         </ValidationProvider>
-                        <div class="btn" :class="!preview?'btn-primary':'btn-light'" @click="preview=false">Escribir</div>
-                        <div class="btn" :class="preview?'btn-primary':'btn-light'" @click="preview=true">Visualizar</div>
+                        <div class="text-start">
+                            <div class="btn" :class="!preview?'btn-primary':'btn-light'" @click="preview=false">Escribir</div>
+                            <div class="btn" :class="preview?'btn-primary':'btn-light'" @click="preview=true">Visualizar</div>
+                        </div>
                         <div v-if="!preview">
                             <froala :tag="'textarea'" :config="config" v-model="postBody"></froala>
                         </div>
                         <froalaView v-else v-model="postBody"></froalaView>
-                        <input class="form-check-input" type="checkbox" v-model="acceptComments" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Aceptar comentarios
-                        </label>
-                        <br>
-                        <div class="btn-group" role="group">
+                        <div class="form-check form-switch text-start">
+                            <input class="form-check-input" type="checkbox" v-model="acceptComments" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">Aceptar comentarios</label>
+                        </div>
+                        <div class="btn-group float-start" role="group">
                             <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
                             <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser" @click="draftPost">Borrador</button>
                             <button class="btn btn-danger" type="reset">Cancelar</button>

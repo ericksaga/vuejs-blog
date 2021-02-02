@@ -40,7 +40,6 @@ export default new Vuex.Store({
     fetchPosts(context) {
       fetch("http://localhost:3000/posts").then((response) => {
         response.json().then((resPost) => {
-          console.log(resPost)
           context.commit('uploadPosts', {
             posts: resPost
           })
@@ -57,7 +56,6 @@ export default new Vuex.Store({
               fetch(`http://localhost:3000/pass?id=${resUser[0].id}&pass=${args.pass}`).then((passResponse) => {
                 passResponse.json().then((res) => {
                   if(res[0]) {
-                    console.log(resUser)
                     context.commit('updateUser', {
                       user: resUser[0]
                     })

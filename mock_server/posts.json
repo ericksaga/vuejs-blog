@@ -1,5 +1,5 @@
 {
-  "users" : [
+  "users": [
     {
       "id": 1,
       "email": "a@gmail.com",
@@ -9,12 +9,28 @@
       "description": "just a random guy",
       "avatar": "",
       "private": false
-    }],
-  "pass" : [
+    },
+    {
+      "id": 2,
+      "email": "b@gmail.com",
+      "username": "b",
+      "firstName": "b",
+      "lastName": "b",
+      "description": "just a random guy",
+      "avatar": "",
+      "private": false
+    }
+  ],
+  "pass": [
     {
       "id": 1,
       "password": "123456789"
-    }],
+    },
+    {
+      "id": 2,
+      "password": "123456789"
+    }
+  ],
   "posts": [
     {
       "id": 1,
@@ -27,7 +43,20 @@
       "drafted": false,
       "deleted": false,
       "acceptComments": true
-    }],
+    },
+    {
+      "authorId": 1,
+      "title": "Second post",
+      "message": "<p>second one on the list :D</p>",
+      "creationDate": "2021-02-02T15:53:00.987Z",
+      "publicationDate": "2021-02-02T15:53:00.987Z",
+      "edited": false,
+      "drafted": false,
+      "deleted": false,
+      "acceptComments": false,
+      "id": 2
+    }
+  ],
   "comments": [
     {
       "id": 1,
@@ -36,7 +65,32 @@
       "creationDate": "2021-02-02T15:38:12.224Z",
       "message": "<p><strong>THE BEST POST EVER</strong><p>",
       "likes": []
-    }],
+    },
+    {
+      "authorId": 1,
+      "postId": "1",
+      "creationDate": "2021-02-02T16:12:21.105Z",
+      "message": "<p>another comment for a great post</p>",
+      "likes": [],
+      "id": 2
+    },
+    {
+      "authorId": 2,
+      "postId": 1,
+      "creationDate": "2021-02-02T16:16:13.428Z",
+      "message": "<p>great post man</p>",
+      "likes": [],
+      "id": 3
+    },
+    {
+      "authorId": 2,
+      "postId": 1,
+      "creationDate": "2021-02-02T16:21:11.148Z",
+      "message": "<p>only post i can comment ):</p>",
+      "likes": [],
+      "id": 4
+    }
+  ],
   "likes": [
     {
       "id": 1,
@@ -44,5 +98,6 @@
       "postId": 1,
       "valid": true,
       "creationDate": "2021-02-02T15:38:12.224Z"
-    }]
+    }
+  ]
 }
