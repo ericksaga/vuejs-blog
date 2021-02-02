@@ -1,135 +1,48 @@
 {
-  "users": [
+  "users" : [
     {
       "id": 1,
       "email": "a@gmail.com",
       "username": "a",
       "firstName": "a",
       "lastName": "a",
-      "description": "this is a avatar :D",
+      "description": "just a random guy",
+      "avatar": "",
       "private": false
-    }
-  ],
-  "pass": [
+    }],
+  "pass" : [
     {
       "id": 1,
-      "pass": "123456789"
-    }
-  ],
+      "password": "123456789"
+    }],
   "posts": [
     {
       "id": 1,
       "authorId": 1,
-      "title": "Awesome title",
-      "message": "The not so awesome body",
-      "creationDate": "2021/01/30",
+      "title": "The first post",
+      "message": "<p>Probably the most important one</p>",
+      "creationDate": "2021-02-02T15:38:12.224Z",
+      "publicationDate": "2021-02-02T15:38:12.224Z",
       "edited": false,
       "drafted": false,
       "deleted": false,
-      "acceptComments": true,
-      "likes": [
-        {
-          "userId": 1
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "authorId": 1,
-      "title": "String2",
-      "message": "String2",
-      "creationDate": "2021/01/30",
-      "edited": false,
-      "drafted": false,
-      "deleted": false,
-      "acceptComments": true,
-      "likes": []
-    },
-    {
-      "title": "THE TITLE",
-      "message": "<p><strong>THE AWESOME POST</strong></p>",
-      "creationDate": "Mon, 01 Feb 2021 17:36:52 GMT",
-      "edited": false,
-      "deleted": false,
-      "drafted": false,
-      "acceptComments": true,
-      "likes": [],
-      "authorId": 1,
-      "id": 3
-    },
-    {
-      "authorId": 1,
-      "title": "okok",
-      "message": "<p>okok</p>",
-      "creationDate": "Mon, 01 Feb 2021 17:40:01 GMT",
-      "edited": false,
-      "deleted": false,
-      "drafted": false,
-      "acceptComments": true,
-      "likes": [],
-      "id": 4
-    },
-    {
-      "authorId": 1,
-      "title": "another test post",
-      "message": "<p>test post</p>",
-      "creationDate": "2021-02-01T17:59:04.865Z",
-      "edited": false,
-      "deleted": false,
-      "drafted": false,
-      "acceptComments": true,
-      "likes": [],
-      "id": 5
-    },
-    {
-      "authorId": 1,
-      "title": "ola",
-      "message": "<p>Un saludo clasico, si si si</p>",
-      "creationDate": "2021-02-02T15:11:53.207Z",
-      "edited": false,
-      "drafted": false,
-      "deleted": false,
-      "acceptComments": false,
-      "likes": [],
-      "id": 6
-    },
-    {
-      "authorId": 1,
-      "title": "test",
-      "message": "<p>testing</p>",
-      "creationDate": "2021-02-02T15:13:16.976Z",
-      "edited": false,
-      "drafted": false,
-      "deleted": false,
-      "acceptComments": false,
-      "likes": [],
-      "id": 7
-    },
-    {
-      "authorId": 1,
-      "title": "another test",
-      "message": "<p>just test, for testing reasons...</p>",
-      "creationDate": "2021-02-02T15:14:18.164Z",
-      "edited": false,
-      "drafted": false,
-      "deleted": false,
-      "acceptComments": false,
-      "likes": [],
-      "id": 8
-    }
-  ],
+      "acceptComments": true
+    }],
   "comments": [
     {
       "id": 1,
       "authorId": 1,
-      "postId": 2,
-      "creationDate": "2021/01/30",
-      "message": "An awesome comment for an average post",
-      "likes": [
-        {
-          "userId": 1
-        }
-      ]
-    }
-  ]
+      "postId": 1,
+      "creationDate": "2021-02-02T15:38:12.224Z",
+      "message": "<p><strong>THE BEST POST EVER</strong><p>",
+      "likes": []
+    }],
+  "likes": [
+    {
+      "id": 1,
+      "userId": 1,
+      "postId": 1,
+      "valid": true,
+      "creationDate": "2021-02-02T15:38:12.224Z"
+    }]
 }

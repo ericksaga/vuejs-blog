@@ -57,34 +57,36 @@ export default {
   data:function() {
       return {
           author:{},
-          comments: {}
+          comments: [],
+          likes: []
       }
   },
   methods: {
   },
   computed: {
-      postDate: function() {
-          //modify it in a readable way
-          return this.publicationDate;
-      },
       likesCount: function() {
-          return this.post.likes.length
+          return this.likes.length
       },
       commentsCount: function() {
           return this.comments.length
       }
   },
   beforeMount: function() {
-      fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
-          response.json().then((resUser) => {
-              this.author = resUser[0]
-          })
-      })
-      fetch(`http://localhost:3000/comments?postId=${this.post.id}`).then((response) => {
-          response.json().then((resComments) => {
-              this.comments = resComments
-          })
-      })
+    fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
+        response.json().then((resUser) => {
+            this.author = resUser[0]
+        })
+    })
+    fetch(`http://localhost:3000/comments?postId=${this.post.id}`).then((response) => {
+        response.json().then((resComments) => {
+            this.comments = resComments
+        })
+    })
+    fetch(`http://localhost:3000/likes?postId=${this.post.id}`).then((response) => {
+        response.json().then((resLikes) => {
+            this.likes = resLikes;
+        })
+    })
   }
 }
 </script>

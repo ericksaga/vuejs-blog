@@ -68,11 +68,11 @@ export default {
                     title: this.title,
                     message: this.postBody,
                     creationDate: new Date().toISOString(),
+                    publicationDate: new Date().toISOString(),
                     edited: false,
                     drafted: false,
                     deleted: false,
                     acceptComments: this.acceptComments,
-                    likes: []
                 })
             }).then(() => {
                 this.$toast.success({
@@ -97,11 +97,11 @@ export default {
                     title: this.title,
                     message: this.postBody,
                     creationDate: new Date().toISOString(),
+                    publicationDate: null,
                     edited: false,
                     deleted: false,
                     drafted: true,
                     acceptComments: this.acceptComments,
-                    likes: []
                 })
             }).then(() => {
                 this.$toast.success({

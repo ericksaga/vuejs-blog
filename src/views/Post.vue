@@ -63,9 +63,8 @@ export default {
       return {
           postId:this.$route.params.postId,
           author:{},
-          post: {
-              likes: []
-          },
+          post: {},
+          likes: [],
           comments: [],
           newComment: ''
       }
@@ -92,7 +91,7 @@ export default {
           'getUser'
       ]),
       likesCount: function() {
-          return this.post.likes.length
+          return this.likes.length
       },
       commentsCount: function() {
           return this.comments.length
@@ -110,6 +109,11 @@ export default {
             fetch(`http://localhost:3000/comments?postId=${this.postId}`).then((response) => {
                 response.json().then((resComments) => {
                     this.comments = resComments
+                })
+            })
+            fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
+                response.json().then((resLikes) => {
+                    this.likes = resLikes
                 })
             })
         })

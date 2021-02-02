@@ -19,15 +19,11 @@
         "title": "String",
         "message": "String",
         "creationDate": "Date",
+        "publicationDate": "Date",
         "edited": "Boolean",
         "drafted": "Boolean",
         "deleted": "Boolean",
-        "acceptComments": "Boolean",
-        "likes": [
-            {
-                "userId": "Integer"
-            }
-        ]
+        "acceptComments": "Boolean"
     },
     "comments": {
         "id": "Integer",
@@ -40,5 +36,12 @@
                 "userId": "Integer"
             }
         ]
+    },
+    "likes": {
+        "id": "Integer",
+        "userId": "Integer",
+        "postId": "Integer",
+        "valid": "Boolean",
+        "creationDate": "Date"
     }
 }
