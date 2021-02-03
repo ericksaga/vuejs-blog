@@ -1,5 +1,5 @@
 <template>
-    <div class="comment container">
+    <div class="comment container" @mouseenter="focus=true" @mouseleave="focus=false">
         <div class="row">
             <div class="col-4">
                 <img alt="user logo" v-if="author.avatar" v-bind:src="author.avatar" class="img-thumbnail">
@@ -9,11 +9,11 @@
             </div>
             <div class="col-8">
                 <div v-if="!edit">
-                    <div class="text-end">
+                    <div class="float-end" v-if="focus && getUser.id == comment.authorId">
                         <i class="bi bi-x-square"></i>
                         <i class="bi bi-pencil-square" @click="edit=true"></i>
                     </div>
-                    <div v-html="comment.message"></div>
+                    <div class="text-start" v-html="comment.message"></div>
                 </div>
                 <div v-else-if="getUser.id == comment.authorId"> 
                     <vue-editor id="commentEditor" v-model="updatedComment"></vue-editor>
@@ -45,6 +45,7 @@ export default {
     data: function() {
         return {
             author: {},
+            focus: false,
             edit: false,
             updatedComment: ''
         }
@@ -59,18 +60,22 @@ export default {
     },
     methods: {
         updateComment: function() {
-            fetch("http://localhost:3000/comments", {
+            fetch(`http://localhost:3000/comments/${this.comment.id}`, {
                 method:'Put',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     id: this.comment.id,
-                    authorId: 1,
-                    postId: this.postId,
-                    creationDate: Date().toUTCString,
+                    authorId: this.comment.authorId,
+                    postId: this.comment.postId,
+                    creationDate: this.comment.creationDate,
                     message: this.updatedComment,
-                    likes: []
+                    likes: this.comment.likes
                 })
             }).then(() => {
                 this.comment.message = this.updatedComment
+                this.edit = false;
             })
         },
         cancelModification: function() {

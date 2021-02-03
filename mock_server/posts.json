@@ -63,12 +63,12 @@
       "authorId": 1,
       "postId": 1,
       "creationDate": "2021-02-02T15:38:12.224Z",
-      "message": "<p><strong>THE BEST POST EVER</strong><p>",
+      "message": "<p><strong>THE BEST POST EVER :D</strong></p>",
       "likes": []
     },
     {
       "authorId": 1,
-      "postId": "1",
+      "postId": 1,
       "creationDate": "2021-02-02T16:12:21.105Z",
       "message": "<p>another comment for a great post</p>",
       "likes": [],

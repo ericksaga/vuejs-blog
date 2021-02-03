@@ -1,10 +1,10 @@
 <template>
 <div class="post container">
-    <div class="row">
-        <i class="bi bi-x-square text-end" v-if="getUser.id==post.authorId"></i>
-        <h1> {{ post.title }} </h1>
-    </div>
-    <div class="row">
+    <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
+        <div class="col-12">
+            <i class="bi bi-x-square float-end" v-if="focus && getUser.id==post.authorId"></i>
+            <h1> {{ post.title }} </h1>
+        </div>
         <div class="col-4"> 
             <img alt="user logo" v-if="author.avatar" v-bind:src="author.avatar" class="img-thumbnail">
             <img alt="user logo" v-else src="../assets/placeholder.jpg" class="img-thumbnail">
@@ -14,9 +14,7 @@
         <div class="col-8"> 
             <div v-html="post.message"/>
         </div>
-    </div>
     <p v-if="post.edited">edited</p>
-    <div class="row">
         <div class="col-6">
             <!-- <i class="bi bi-hand-thumbs-up-fill"></i> !-->
             <i class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
@@ -66,7 +64,8 @@ export default {
           post: {},
           likes: [],
           comments: [],
-          newComment: ''
+          newComment: '',
+          focus: false
       }
   },
   methods: {
