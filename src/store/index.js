@@ -18,8 +18,8 @@ export default new Vuex.Store({
     getUser(state) {
       return state.user
     },
-    getUserPosts(state, payload) {
-      return state.posts.filter(post => post.authorId == payload.user.id && !post.drafted && !post.deleted)
+    getUserPosts(state) {
+      return state.posts.filter(post => post.authorId == state.user.id && !post.drafted && !post.deleted)
     },
     getMyDraftedPosts(state) {
       return state.posts.filter(post => post.authorId == state.user.id && post.drafted)
@@ -71,7 +71,7 @@ export default new Vuex.Store({
           })
         })
       })
-      
+
     }
     
   },

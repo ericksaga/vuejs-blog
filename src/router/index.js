@@ -3,6 +3,10 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Post from '../views/Post.vue'
 import CreatePost from '../views/CreatePost.vue'
+import MyPosts from '../views/MyPosts.vue'
+import MyPublishedPosts from '../views/MyPublishedPosts.vue'
+import MyDraftedPosts from '../views/MyDraftedPosts.vue'
+import MyDeletedPosts from '../views/MyDeletedPosts.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +26,28 @@ const routes = [
     path: '/createPost',
     name: 'CreatePost',
     component: CreatePost
+  },
+  {
+    path: '/myPosts',
+    name: 'MyPosts',
+    component: MyPosts,
+    children: [
+      {
+        path: 'myPublishedPosts',
+        name: 'MyPublishedPosts',
+        component: MyPublishedPosts
+      },
+      {
+        path: 'myDrafts',
+        name: 'MyDraftedPosts',
+        component: MyDraftedPosts
+      },
+      {
+        path: 'myDeletedPosts',
+        name: 'MyDeletedPosts',
+        component: MyDeletedPosts
+      }
+    ]
   },
   {
     path: '/about',

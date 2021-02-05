@@ -24,7 +24,7 @@
                         <div class="btn-group float-start" role="group">
                             <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
                             <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser" @click="draftPost">Borrador</button>
-                            <button class="btn btn-danger" type="reset">Cancelar</button>
+                            <button class="btn btn-danger" type="reset" @click="cancelPost">Cancelar</button>
                         </div>
                     </form>
                 </ValidationObserver>
@@ -80,6 +80,7 @@ export default {
                     title:'Exito',
                     message:'El post ha sido publicado.'
                 })
+                this.$router.push({name:'MyPosts'})
             }, () => {
                 this.$toast.error({
                     title:'Error',
@@ -109,12 +110,16 @@ export default {
                     title:'Exito',
                     message:'El post se ha guardado.'
                 })
+                this.$router.push({name:'MyPosts'})
             }, () => {
                 this.$toast.error({
                     title:'Error',
                     message:'El post no se ha podido guardar.'
                 })
             })
+        },
+        cancelPost: function() {
+            this.$router.push({name:'MyPosts'})        
         }
     },
     computed: {

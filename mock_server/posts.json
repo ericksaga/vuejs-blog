@@ -55,6 +55,30 @@
       "deleted": false,
       "acceptComments": false,
       "id": 2
+    },
+    {
+      "authorId": 1,
+      "title": "test of a draft",
+      "message": "<p>don't know what to write..., maybe later</p>",
+      "creationDate": "2021-02-04T17:44:49.579Z",
+      "publicationDate": null,
+      "edited": false,
+      "deleted": false,
+      "drafted": true,
+      "acceptComments": true,
+      "id": 3
+    },
+    {
+      "authorId": 1,
+      "title": "ksafgbkasfhu",
+      "message": "<p>uqsgafigasiufsag</p>",
+      "creationDate": "2021-02-04T17:49:32.305Z",
+      "publicationDate": null,
+      "edited": false,
+      "deleted": false,
+      "drafted": true,
+      "acceptComments": false,
+      "id": 4
     }
   ],
   "comments": [
