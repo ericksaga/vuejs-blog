@@ -7,6 +7,10 @@ import MyPosts from '../views/MyPosts.vue'
 import MyPublishedPosts from '../views/MyPublishedPosts.vue'
 import MyDraftedPosts from '../views/MyDraftedPosts.vue'
 import MyDeletedPosts from '../views/MyDeletedPosts.vue'
+import Profile from '../views/Profile.vue'
+import UserPosts from '../views/UserPosts.vue'
+import UserCommentedPosts from '../views/UserCommentedPosts.vue'
+import UserLikedPosts from '../views/UserLikedPosts.vue'
 
 Vue.use(VueRouter)
 
@@ -47,6 +51,29 @@ const routes = [
         name: 'MyDeletedPosts',
         component: MyDeletedPosts
       }
+    ]
+  },
+  {
+    path: '/profile/:userId',
+    name: 'Profile',
+    component: Profile,
+    props: true,
+    children: [
+      {
+        path: 'userPosts',
+        name: "UserPosts",
+        component: UserPosts
+      },
+      {
+        path: 'userCommentedPosts',
+        name: "UserCommentedPosts",
+        component: UserCommentedPosts
+      },
+      {
+        path: 'userLikedPosts',
+        name: "UserLikedPosts",
+        component: UserLikedPosts
+      },
     ]
   },
   {

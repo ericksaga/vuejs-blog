@@ -6,7 +6,14 @@
           <button class="btn btn-light" @click="openModal">login</button>
         </div>
         <div v-else class="col-3">
-          {{ getUser.username }}
+          <router-link v-if="getUser.id" :to="{
+            name:'UserPosts',
+            params: {
+              userId: getUser.id
+            }
+          }"> 
+            {{ getUser.username }}
+          </router-link>
         </div>
         <div class="col-6">
           <router-link to='/'>Inicio</router-link>

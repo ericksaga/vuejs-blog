@@ -12,9 +12,16 @@
         </div>
         <div class="row">
             <div class="col-4"> 
-                <img alt="user logo" v-if="author.avatar" v-bind:src="author.avatar" class="img-thumbnail">
-                <img alt="user logo" v-else src="../assets/placeholder.jpg" class="img-thumbnail">
-                <p>{{ author.username }}</p>
+                <router-link v-if="author.id" :to="{
+                    name:'UserPosts',
+                    params: {
+                        userId: author.id
+                    }
+                }"> 
+                    <img alt="user logo" v-if="author.avatar" v-bind:src="author.avatar" class="img-thumbnail">
+                    <img alt="user logo" v-else src="../assets/placeholder.jpg" class="img-thumbnail">
+                    <p>{{ author.username }}</p>
+                </router-link>
                 <router-link :to="{
                     name:'Post',
                     params: {
