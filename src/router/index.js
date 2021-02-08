@@ -13,6 +13,7 @@ import UserCommentedPosts from '../views/UserCommentedPosts.vue'
 import UserLikedPosts from '../views/UserLikedPosts.vue'
 import Configuration from '../views/Configuration.vue'
 import ConfigurateUser from '../views/ConfigurateUser.vue'
+import ConfigurateSecurity from '../views/ConfigurateSecurity.vue'
 
 Vue.use(VueRouter)
 
@@ -87,6 +88,11 @@ const routes = [
         path: 'profile',
         name:'configurateUser',
         component: ConfigurateUser
+      },
+      {
+        path: 'security',
+        name:'configurateSecurity',
+        component: ConfigurateSecurity
       }
     ]
   },

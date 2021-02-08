@@ -11,10 +11,7 @@
             </li>
             <li class="nav-item">
                 <router-link :to="{
-                    name:'UserCommentedPosts',
-                    params: {
-                        userId: 1
-                    }
+                    name:'configurateSecurity',
                 }"
                 v-slot="{ isExactActive, navigate }" custom>
                     <a class="nav-link" :class="isExactActive ?'active':''" aria-current="page" @click="navigate">Seguridad</a>

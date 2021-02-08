@@ -7,8 +7,8 @@
       "firstName": "a",
       "lastName": "a",
       "description": "just a random guy",
-      "avatar": "mp",
-      "private": false
+      "private": false,
+      "avatar": "identicon"
     },
     {
       "id": 2,
