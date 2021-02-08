@@ -22,6 +22,11 @@
           <router-link v-if="getUser" to='/createPost'>Crear un post</router-link>
         </div>
       </div>
+      <div class="row">
+        <div class="col-3">
+          <button class="btn btn-danger" v-if="getUser" @click="logout">Salir</button>
+        </div>
+      </div>
     </div>
     <router-view/>
     <modal name="login-register">
@@ -31,25 +36,41 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import LoginModal from './views/LoginModal.vue'
 export default {
   components: { LoginModal },
   methods: {
+    ...mapMutations([
+      'updateUser'
+    ]),
     openModal: function() {
       this.$modal.show('login-register')
+    },
+    logout: function() {
+      this.$cookies.remove("userId")
+      this.updateUser({user: ''})
     }
   },
   computed: {
     ...mapGetters([
       'getUser'
-    ])
+    ]),
   },
   watch: {
     getUser: function() {
       if(this.getUser) {
         this.$modal.hide('login-register')
       }
+    }
+  },
+  beforeMount: function() {
+    if(this.$cookies.isKey("userId")) {
+      fetch(`http://localhost:3000/users/${this.$cookies.get("userId")}`).then((response) => {
+        response.json().then((resUser) => {
+          this.updateUser({user: resUser});
+        })
+      })
     }
   }
 }

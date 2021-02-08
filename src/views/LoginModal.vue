@@ -35,7 +35,7 @@
 // @ is an alias to /src
 import RegisterModal from '../views/RegisterModal.vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'login-modal',
   components: {
@@ -49,6 +49,12 @@ export default {
     ]),
     submitLogin: function(user) {
         this.logIn(user).then(() => {
+            if(this.rememberMe) {
+                this.$cookies.set("userId", this.getUser.id, "30d");
+            }
+            else {
+                this.$cookies.set("userId", this.getUser.id, 0);
+            }
             this.loginError = ''
         }, (error) => {
             console.log(error)
@@ -57,7 +63,9 @@ export default {
     }
   },
   computed: {
-    
+    ...mapGetters([
+        'getUser'
+    ])
   },
   data: function() {
     return {
