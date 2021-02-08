@@ -6,6 +6,7 @@ import VModal from 'vue-js-modal'
 import './rules/validation'
 import VueFroala from 'vue-froala-wysiwyg'
 import CxltToastr from 'cxlt-vue2-toastr'
+import Notifications from 'vue-notification'
 
 // Require Froala Editor js file.
 require('froala-editor/js/froala_editor.pkgd.min.js')
@@ -19,6 +20,7 @@ import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
 Vue.config.productionTip = false
 Vue.use(VModal)
 Vue.use(VueFroala)
+Vue.use(Notifications)
 Vue.use(CxltToastr, {
   position: 'top right',
   showDuration: 2000,

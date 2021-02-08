@@ -11,6 +11,8 @@ import Profile from '../views/Profile.vue'
 import UserPosts from '../views/UserPosts.vue'
 import UserCommentedPosts from '../views/UserCommentedPosts.vue'
 import UserLikedPosts from '../views/UserLikedPosts.vue'
+import Configuration from '../views/Configuration.vue'
+import ConfigurateUser from '../views/ConfigurateUser.vue'
 
 Vue.use(VueRouter)
 
@@ -74,6 +76,18 @@ const routes = [
         name: "UserLikedPosts",
         component: UserLikedPosts
       },
+    ]
+  },
+  {
+    path: '/configuration',
+    name: 'configuration',
+    component: Configuration,
+    children: [
+      {
+        path: 'profile',
+        name:'configurateUser',
+        component: ConfigurateUser
+      }
     ]
   },
   {

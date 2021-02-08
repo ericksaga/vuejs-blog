@@ -71,7 +71,19 @@ export default new Vuex.Store({
           })
         })
       })
-
+    },
+    updateUser(context, args) {
+      fetch(`http://localhost:3000/users/${args.user.id}`, {
+        method:'Put',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(args.user)
+      }).then(() => {
+        context.commit('updateUser', {
+          user: args.user
+        })
+      })
     }
     
   },

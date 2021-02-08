@@ -7,7 +7,7 @@
       "firstName": "a",
       "lastName": "a",
       "description": "just a random guy",
-      "avatar": "",
+      "avatar": "mp",
       "private": false
     },
     {
@@ -17,8 +17,8 @@
       "firstName": "b",
       "lastName": "b",
       "description": "just a random guy",
-      "avatar": "",
-      "private": true
+      "private": true,
+      "avatar": "retro"
     }
   ],
   "pass": [

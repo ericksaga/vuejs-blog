@@ -27,6 +27,7 @@
     <modal name="login-register">
       <login-modal/>
     </modal>
+    <notifications group="foo" />
   </div>
 </template>
 <script>

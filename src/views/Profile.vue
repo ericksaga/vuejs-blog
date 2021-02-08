@@ -3,13 +3,12 @@
         <div class="row">
             <h2>{{user.username}}</h2>
             <div class="col-4">
-                <img alt="user logo" v-if="user.avatar" v-bind:src="user.avatar" class="img-thumbnail">
-                <img alt="user logo" v-else src="../assets/placeholder.jpg" class="img-thumbnail">
+                <img alt="user logo" v-bind:src="avatarSource" class="img-thumbnail">
             </div>
             <div class="col-8" v-if="getUser.id == user.id || !user.private">
                 <p>Nombre: {{user.firstName}}</p>
                 <p>Apellido: {{user.lastName}}</p>
-                <router-link to="/" v-if="getUser.id == user.id">Configuracion</router-link>
+                <router-link to="/configuration" v-if="getUser.id == user.id">Configuracion</router-link>
             </div>
             <div class="col-8" v-else>
                 El perfil de este usuario es privado.
@@ -62,12 +61,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import CryptoJS from 'crypto-js'
 export default {
     name:'profile',
     data: function() {
         return {
             userId: this.$route.params.userId,
-            user: {}
+            user: {},
+            avatarSource: ''
         }
     },
     computed: {
@@ -86,6 +87,7 @@ export default {
             response.json().then((resUser) => {
                 if(resUser) {
                     this.user = resUser
+                    this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.user.email)}?d=${this.user.avatar?this.user.avatar:'mp'}&&f=y`
                 }
             })
         })

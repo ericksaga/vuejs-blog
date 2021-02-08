@@ -12,8 +12,7 @@
                     userId: author.id
                 }
             }"> 
-                <img alt="user logo" v-if="author.avatar" v-bind:src="author.avatar" class="img-thumbnail">
-                <img alt="user logo" v-else src="../assets/placeholder.jpg" class="img-thumbnail">
+                <img alt="user logo" v-bind:src="avatarSource" class="img-thumbnail">
                 <p>{{ author.username }}</p>
             </router-link>
             <p>{{ post.creationDate }}</p>
@@ -58,6 +57,7 @@
 import Comment from './Comment.vue';
 import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
+import CryptoJS from 'crypto-js'
 export default {
   components: { 
       Comment,
@@ -72,7 +72,8 @@ export default {
           likes: [],
           comments: [],
           newComment: '',
-          focus: false
+          focus: false,
+          avatarSource: ''
       }
   },
   methods: {
@@ -114,6 +115,7 @@ export default {
         fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
             response.json().then((resUser) => {
                 this.author = resUser[0]
+                this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
             })
         })
       }
