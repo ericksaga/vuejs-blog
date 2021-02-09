@@ -4,7 +4,7 @@
         <ValidationObserver v-slot="{ invalid }">
             <form>
                 <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="email|required">
-                    <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Email" v-model="username">
+                    <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Email" v-model="email">
                     <div class="invalid-feedback">{{ errors[0] }}</div>
                 </ValidationProvider>
                 <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
@@ -15,7 +15,7 @@
                     <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Confirm password" v-model="confirmPass">
                     <div class="invalid-feedback">{{ errors[0] }}</div>
                 </ValidationProvider>
-                <button type="submit" :disabled="invalid" class="btn btn-primary">Registrarse</button>
+                <button type="submit" :disabled="invalid" class="btn btn-primary" @click="submitRegister">Registrarse</button>
             </form>
         </ValidationObserver>
     </div>
@@ -31,14 +31,34 @@ export default {
     ValidationObserver
   },
   methods: {
-    
+    submitRegister: function() {
+      fetch(`http://localhost:3000/users?email=${this.email}`).then((response) => {
+        response.json().then((resUser) => {
+          if(resUser.lenght > 0) {
+            this.$toast.error({
+                title:'Error',
+                message:'El email esta en uso.'
+            })
+          } else {
+            this.$cookies.set("registerUser", {
+              email: this.email,
+              password: this.password
+            }, "1h");
+            //temporary solution for email form
+            console.log('ok')
+            this.$modal.hide('login-register')
+            this.$router.push({name:'CompleteRegister'})
+          }
+        })
+      })
+    }
   },
   computed: {
     
   },
   data: function() {
     return {
-      username: '',
+      email: '',
       password: '',
       confirmPass: ''
     }

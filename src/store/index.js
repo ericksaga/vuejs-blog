@@ -84,6 +84,28 @@ export default new Vuex.Store({
           user: args.user
         })
       })
+    },
+    registerUser(context, args) {
+      fetch(`http://localhost:3000/users`, {
+        method:'Post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(args.user)
+      }).then((response) => {
+        response.json().then((resUser) => {
+          context.commit('updateUser', {
+            user: resUser
+          })
+          fetch(`http://localhost:3000/pass`, {
+            method:'Post',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: resUser.id, password: args.password})
+          })
+        })
+      })
     }
     
   },
