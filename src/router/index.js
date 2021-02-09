@@ -14,6 +14,7 @@ import UserLikedPosts from '../views/UserLikedPosts.vue'
 import Configuration from '../views/Configuration.vue'
 import ConfigurateUser from '../views/ConfigurateUser.vue'
 import ConfigurateSecurity from '../views/ConfigurateSecurity.vue'
+import CompleteRegister from '../views/CompleteRegister.vue'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,11 @@ const routes = [
     path: '/createPost/:postId',
     name: 'EditPost',
     component: CreatePost
+  },
+  {
+    path: '/completeRegistration',
+    name: 'CompleteRegister',
+    component: CompleteRegister
   },
   {
     path: '/myPosts',
