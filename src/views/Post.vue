@@ -2,7 +2,10 @@
 <div class="post container">
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
-            <i class="bi bi-x-square float-end" v-if="focus && getUser.id==post.authorId"></i>
+            <div class="float-end" v-if="focus && getUser.id==post.authorId">
+                <i class="bi bi-x-square float-end"></i>
+                <i class="bi bi-pencil-square" @click="$router.push({name:'EditPost', params:{'postId':postId}})"></i>
+            </div>
             <h1> {{ post.title }} </h1>
         </div>
         <div class="col-4"> 
@@ -15,15 +18,15 @@
                 <img alt="user logo" v-bind:src="avatarSource" class="img-thumbnail">
                 <p>{{ author.username }}</p>
             </router-link>
-            <p>{{ post.creationDate }}</p>
+            <p>{{ post.publicationDate }}</p>
         </div>
         <div class="col-8"> 
             <div v-html="post.message"/>
         </div>
     <p v-if="post.edited">edited</p>
-        <div class="col-6">
-            <!-- <i class="bi bi-hand-thumbs-up-fill"></i> !-->
-            <i class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
+        <div class="col-6" @click="likePost">
+            <i v-if="userLiked" class="bi bi-hand-thumbs-up-fill"> {{ likesCount }} </i>
+            <i v-else class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
         </div>
         <div class="col-6">
             <i class="bi bi-chat-left-dots"> {{ commentsCount }}</i>
@@ -48,13 +51,14 @@
         <h2>Comentarios</h2>
         <comment v-for="uComment in comments" 
         :comment="uComment"
+        v-on:updateComments="fetchPostComments"
         :key="uComment.id"/>
     </div>
   </div>
 </template>
 
 <script>
-import Comment from './Comment.vue';
+import Comment from '../components/Comment.vue';
 import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
 import CryptoJS from 'crypto-js'
@@ -95,6 +99,7 @@ export default {
             })
         }).then(() => {
             this.fetchPostComments()
+            this.clearEditor()
         })
       },
       fetchPostComments: function(){
@@ -107,7 +112,7 @@ export default {
       fetchPostLikes: function() {
         fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
             response.json().then((resLikes) => {
-                this.likes = resLikes
+                this.likes = resLikes.filter((like) => like.valid)
             })
         })
       },
@@ -118,6 +123,39 @@ export default {
                 this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
             })
         })
+      },
+      likePost: function() {
+          fetch(`http://localhost:3000/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((response) => {
+              response.json().then((resLike) => {
+                  if(resLike.length > 0) {
+                    resLike[0].valid = !resLike[0].valid;
+                    fetch(`http://localhost:3000/likes/${resLike[0].id}`, {
+                        method:'Put',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(resLike[0])
+                    }).then(() => {
+                        this.fetchPostLikes()
+                    })
+                  } else {
+                      fetch(`http://localhost:3000/likes`, {
+                        method:'Post',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userId: this.getUser.id,
+                            postId: this.post.id,
+                            valid: true,
+                            creationDate: new Date().toISOString()
+                        })
+                    }).then(() => {
+                        this.fetchPostLikes()
+                    })
+                  }
+              })
+          })
       }
   },
   computed: {
@@ -129,6 +167,9 @@ export default {
       },
       commentsCount: function() {
           return this.comments.length
+      },
+      userLiked: function() {
+          return this.likes.find((like) => like.userId == this.getUser.id)
       }
   },
   beforeMount: function() {

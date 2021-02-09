@@ -1,7 +1,11 @@
 <template>
     <tr class="PostSummary">
         <td> {{ post.id }} </td>
-        <td> {{ post.title }} </td>
+        <td> 
+            <router-link :to="'/createPost/'+post.id">
+                {{ post.title }} 
+            </router-link>
+        </td>
         <td> {{ commentsCount }} </td>
         <td> {{ likesCount }} </td>
         <td> {{ post.creationDate }} </td>

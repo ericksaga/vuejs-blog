@@ -9,6 +9,8 @@
                 <p>Nombre: {{user.firstName}}</p>
                 <p>Apellido: {{user.lastName}}</p>
                 <router-link to="/configuration" v-if="getUser.id == user.id">Configuracion</router-link>
+                <br>
+                <router-link to="/myPosts/myPublishedPosts" v-if="getUser.id == user.id">Posts</router-link>
             </div>
             <div class="col-8" v-else>
                 El perfil de este usuario es privado.
