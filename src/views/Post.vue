@@ -48,12 +48,12 @@
         <div v-else>
             <p>Ingrese a su cuenta para poder comentar</p>
         </div>
-        <h2>Comentarios</h2>
-        <comment v-for="uComment in comments" 
-        :comment="uComment"
-        v-on:updateComments="fetchPostComments"
-        :key="uComment.id"/>
     </div>
+    <h2>Comentarios</h2>
+    <comment v-for="uComment in comments" 
+    :comment="uComment"
+    v-on:updateComments="fetchPostComments"
+    :key="uComment.id"/>
   </div>
 </template>
 
