@@ -51,6 +51,8 @@ export default {
                     }
                 }
             },
+            postId: this.$route.params.postId,
+            post : '',
             postBody: '',
             title: '',
             preview: false,
@@ -59,64 +61,113 @@ export default {
     },
     methods: {
         submitPost: function() {
-            fetch("http://localhost:3000/posts", {
-                method:'Post',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    authorId: this.getUser.id,
-                    title: this.title,
-                    message: this.postBody,
-                    creationDate: new Date().toISOString(),
-                    publicationDate: new Date().toISOString(),
-                    edited: false,
-                    drafted: false,
-                    deleted: false,
-                    acceptComments: this.acceptComments,
+            if(this.postId) {
+                this.post.message = this.postBody
+                this.post.title = this.title
+                this.post.acceptComments = this.acceptComments
+                this.post.edited = true
+                this.post.drafted = false
+                this.post.deleted = false
+                this.post.publicationDate = this.post.publicationDate?this.post.publicationDate:new Date().toISOString()
+                fetch(`http://localhost:3000/posts/${this.postId}`, {
+                    method:'Put',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.post)
+                }).then(() => {
+                    this.$toast.success({
+                        title:'Exito',
+                        message:'El post ha sido publicado.'
+                    })
+                    this.$router.push({name:'MyPosts'})
+                }, () => {
+                    this.$toast.error({
+                        title:'Error',
+                        message:'El post no se ha podido publicar.'
+                    })
                 })
-            }).then(() => {
-                this.$toast.success({
-                    title:'Exito',
-                    message:'El post ha sido publicado.'
+            }
+            else {
+                fetch("http://localhost:3000/posts", {
+                    method:'Post',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        authorId: this.getUser.id,
+                        title: this.title,
+                        message: this.postBody,
+                        creationDate: new Date().toISOString(),
+                        publicationDate: new Date().toISOString(),
+                        edited: false,
+                        drafted: false,
+                        deleted: false,
+                        acceptComments: this.acceptComments,
+                    })
+                }).then(() => {
+                    this.$toast.success({
+                        title:'Exito',
+                        message:'El post ha sido publicado.'
+                    })
+                    this.$router.push({name:'MyPosts'})
+                }, () => {
+                    this.$toast.error({
+                        title:'Error',
+                        message:'El post no se ha podido publicar.'
+                    })
                 })
-                this.$router.push({name:'MyPosts'})
-            }, () => {
-                this.$toast.error({
-                    title:'Error',
-                    message:'El post no se ha podido publicar.'
-                })
-            })
+            }
         },
         draftPost: function() {
-            fetch("http://localhost:3000/posts", {
-                method:'Post',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    authorId: this.getUser.id,
-                    title: this.title,
-                    message: this.postBody,
-                    creationDate: new Date().toISOString(),
-                    publicationDate: null,
-                    edited: false,
-                    deleted: false,
-                    drafted: true,
-                    acceptComments: this.acceptComments,
+            if(this.postId && this.post.drafted) {
+                this.post.message = this.postBody
+                this.post.title = this.title
+                this.post.acceptComments = this.acceptComments
+                this.post.edited = true
+                fetch(`http://localhost:3000/posts/${this.postId}`, {
+                    method:'Put',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.post)
                 })
-            }).then(() => {
-                this.$toast.success({
-                    title:'Exito',
-                    message:'El post se ha guardado.'
+            }
+            else if(!this.postId) {
+                fetch("http://localhost:3000/posts", {
+                    method:'Post',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        authorId: this.getUser.id,
+                        title: this.title,
+                        message: this.postBody,
+                        creationDate: new Date().toISOString(),
+                        publicationDate: null,
+                        edited: false,
+                        deleted: false,
+                        drafted: true,
+                        acceptComments: this.acceptComments,
+                    })
+                }).then(() => {
+                    this.$toast.success({
+                        title:'Exito',
+                        message:'El post se ha guardado.'
+                    })
+                    this.$router.push({name:'MyPosts'})
+                }, () => {
+                    this.$toast.error({
+                        title:'Error',
+                        message:'El post no se ha podido guardar.'
+                    })
                 })
-                this.$router.push({name:'MyPosts'})
-            }, () => {
-                this.$toast.error({
-                    title:'Error',
-                    message:'El post no se ha podido guardar.'
-                })
-            })
+            } else {
+                this.$toast.warn({
+                        title:'Advertencia',
+                        message:'El post ya ha sido publicado.'
+                    })
+            }
         },
         cancelPost: function() {
             this.$router.push({name:'MyPosts'})        
@@ -127,7 +178,19 @@ export default {
             'getUser'
         ]),
     },
-    mounted() {
+    beforeMount: function() {
+        if(this.postId) {
+            fetch(`http://localhost:3000/posts/${this.postId}`).then((response) => {
+                response.json().then((resPost) => {
+                    this.post = resPost;
+                    this.postBody = resPost.message;
+                    this.title = resPost.title;
+                    this.acceptComments = resPost.acceptComments;
+                })
+            })
+        }
+    },
+    mounted: function() {
         if(!this.getUser) {
             this.$toast.error({
                 title: 'Error',

@@ -50,7 +50,7 @@
       "message": "<p>second one on the list :D</p>",
       "creationDate": "2021-02-02T15:53:00.987Z",
       "publicationDate": "2021-02-02T15:53:00.987Z",
-      "edited": false,
+      "edited": true,
       "drafted": false,
       "deleted": false,
       "acceptComments": false,

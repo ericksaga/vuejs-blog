@@ -35,6 +35,11 @@ const routes = [
     component: CreatePost
   },
   {
+    path: '/createPost/:postId',
+    name: 'EditPost',
+    component: CreatePost
+  },
+  {
     path: '/myPosts',
     name: 'MyPosts',
     component: MyPosts,

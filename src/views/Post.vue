@@ -2,7 +2,10 @@
 <div class="post container">
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
-            <i class="bi bi-x-square float-end" v-if="focus && getUser.id==post.authorId"></i>
+            <div class="float-end" v-if="focus && getUser.id==post.authorId">
+                <i class="bi bi-x-square float-end"></i>
+                <i class="bi bi-pencil-square" @click="$router.push({name:'EditPost', params:{'postId':postId}})"></i>
+            </div>
             <h1> {{ post.title }} </h1>
         </div>
         <div class="col-4"> 
@@ -96,7 +99,7 @@ export default {
             })
         }).then(() => {
             this.fetchPostComments()
-            this.newComment = ''
+            this.clearEditor()
         })
       },
       fetchPostComments: function(){
