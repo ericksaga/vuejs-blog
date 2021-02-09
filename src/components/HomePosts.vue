@@ -27,7 +27,7 @@
                         postId: post.id
                     }
                 }">
-                    <p>{{ post.creationDate }}</p>
+                    <p>{{ post.publicationDate }}</p>
                 </router-link>
             </div>
             <div class="col-8"> 

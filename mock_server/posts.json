@@ -61,10 +61,10 @@
       "title": "test of a draft",
       "message": "<p>don't know what to write..., maybe later</p>",
       "creationDate": "2021-02-04T17:44:49.579Z",
-      "publicationDate": null,
-      "edited": false,
+      "publicationDate": "2021-02-09T04:32:02.996Z",
+      "edited": true,
       "deleted": false,
-      "drafted": true,
+      "drafted": false,
       "acceptComments": true,
       "id": 3
     },

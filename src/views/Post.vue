@@ -18,7 +18,7 @@
                 <img alt="user logo" v-bind:src="avatarSource" class="img-thumbnail">
                 <p>{{ author.username }}</p>
             </router-link>
-            <p>{{ post.creationDate }}</p>
+            <p>{{ post.publicationDate }}</p>
         </div>
         <div class="col-8"> 
             <div v-html="post.message"/>
