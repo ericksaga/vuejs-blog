@@ -36,9 +36,9 @@
         </div>
         <p v-if="post.edited">edited</p>
         <div class="row">
-            <div class="col-6">
-                <!-- <i class="bi bi-hand-thumbs-up-fill"></i> !-->
-                <i class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
+            <div class="col-6" @click="likePost">
+                <i v-if="userLiked" class="bi bi-hand-thumbs-up-fill"> {{ likesCount }} </i>
+                <i v-else class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
             </div>
             <div class="col-6">
                 <router-link :to="{
@@ -56,6 +56,7 @@
 
 <script>
 import CryptoJS from 'crypto-js'
+import { mapGetters } from 'vuex'
 export default {
   name: 'home-posts',
   props: {
@@ -70,32 +71,80 @@ export default {
       }
   },
   methods: {
+      fetchLikes: function() {
+            fetch(`http://localhost:3000/likes?postId=${this.post.id}`).then((response) => {
+                response.json().then((resLikes) => {
+                    this.likes = resLikes.filter((like) => like.valid);
+                })
+            })  
+      },
+      fetchComments: function() {
+            fetch(`http://localhost:3000/comments?postId=${this.post.id}`).then((response) => {
+                response.json().then((resComments) => {
+                    this.comments = resComments
+                })
+            })
+      },
+      fetchAuthor: function() {
+          fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
+                response.json().then((resUser) => {
+                    this.author = resUser[0]
+                    this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
+                })
+            })
+      },
+      likePost: function() {
+          fetch(`http://localhost:3000/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((response) => {
+              response.json().then((resLike) => {
+                  if(resLike.length > 0) {
+                    resLike[0].valid = !resLike[0].valid;
+                    fetch(`http://localhost:3000/likes/${resLike[0].id}`, {
+                        method:'Put',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(resLike[0])
+                    }).then(() => {
+                        this.fetchLikes()
+                    })
+                  } else {
+                      fetch(`http://localhost:3000/likes`, {
+                        method:'Post',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userId: this.getUser.id,
+                            postId: this.post.id,
+                            valid: true,
+                            creationDate: new Date().toISOString()
+                        })
+                    }).then(() => {
+                        this.fetchLikes()
+                    })
+                  }
+              })
+          })
+      }
   },
   computed: {
+      ...mapGetters([
+          'getUser'
+      ]),
       likesCount: function() {
           return this.likes.length
       },
       commentsCount: function() {
           return this.comments.length
+      },
+      userLiked: function() {
+          return this.likes.find((like) => like.userId == this.getUser.id)
       }
   },
   beforeMount: function() {
-    fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
-        response.json().then((resUser) => {
-            this.author = resUser[0]
-            this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
-        })
-    })
-    fetch(`http://localhost:3000/comments?postId=${this.post.id}`).then((response) => {
-        response.json().then((resComments) => {
-            this.comments = resComments
-        })
-    })
-    fetch(`http://localhost:3000/likes?postId=${this.post.id}`).then((response) => {
-        response.json().then((resLikes) => {
-            this.likes = resLikes;
-        })
-    })
+    this.fetchAuthor()
+    this.fetchComments()
+    this.fetchLikes()
   }
 }
 </script>

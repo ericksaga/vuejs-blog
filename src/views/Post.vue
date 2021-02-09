@@ -21,9 +21,9 @@
             <div v-html="post.message"/>
         </div>
     <p v-if="post.edited">edited</p>
-        <div class="col-6">
-            <!-- <i class="bi bi-hand-thumbs-up-fill"></i> !-->
-            <i class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
+        <div class="col-6" @click="likePost">
+            <i v-if="userLiked" class="bi bi-hand-thumbs-up-fill"> {{ likesCount }} </i>
+            <i v-else class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
         </div>
         <div class="col-6">
             <i class="bi bi-chat-left-dots"> {{ commentsCount }}</i>
@@ -107,7 +107,7 @@ export default {
       fetchPostLikes: function() {
         fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
             response.json().then((resLikes) => {
-                this.likes = resLikes
+                this.likes = resLikes.filter((like) => like.valid)
             })
         })
       },
@@ -118,6 +118,39 @@ export default {
                 this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
             })
         })
+      },
+      likePost: function() {
+          fetch(`http://localhost:3000/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((response) => {
+              response.json().then((resLike) => {
+                  if(resLike.length > 0) {
+                    resLike[0].valid = !resLike[0].valid;
+                    fetch(`http://localhost:3000/likes/${resLike[0].id}`, {
+                        method:'Put',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(resLike[0])
+                    }).then(() => {
+                        this.fetchPostLikes()
+                    })
+                  } else {
+                      fetch(`http://localhost:3000/likes`, {
+                        method:'Post',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userId: this.getUser.id,
+                            postId: this.post.id,
+                            valid: true,
+                            creationDate: new Date().toISOString()
+                        })
+                    }).then(() => {
+                        this.fetchPostLikes()
+                    })
+                  }
+              })
+          })
       }
   },
   computed: {
@@ -129,6 +162,9 @@ export default {
       },
       commentsCount: function() {
           return this.comments.length
+      },
+      userLiked: function() {
+          return this.likes.find((like) => like.userId == this.getUser.id)
       }
   },
   beforeMount: function() {
