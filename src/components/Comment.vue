@@ -16,7 +16,7 @@
             <div class="col-8">
                 <div v-if="!edit">
                     <div class="float-end" v-if="focus && getUser.id == comment.authorId">
-                        <i class="bi bi-x-square"></i>
+                        <i class="bi bi-x-square" @click="deleteComment"></i>
                         <i class="bi bi-pencil-square" @click="edit=true"></i>
                     </div>
                     <div class="text-start" v-html="comment.message"></div>
@@ -89,6 +89,13 @@ export default {
         cancelModification: function() {
             this.edit = false;
             this.updatedComment = this.comment.message
+        },
+        deleteComment: function() {
+            fetch(`http://localhost:3000/comments/${this.comment.id}`, {
+                method:'Delete'
+            }).then(() => {
+                this.$emit('updateComments')
+            })
         }
     },
     beforeMount: function() {

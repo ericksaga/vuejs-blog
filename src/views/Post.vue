@@ -48,13 +48,14 @@
         <h2>Comentarios</h2>
         <comment v-for="uComment in comments" 
         :comment="uComment"
+        v-on:updateComments="fetchPostComments"
         :key="uComment.id"/>
     </div>
   </div>
 </template>
 
 <script>
-import Comment from './Comment.vue';
+import Comment from '../components/Comment.vue';
 import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
 import CryptoJS from 'crypto-js'
@@ -95,6 +96,7 @@ export default {
             })
         }).then(() => {
             this.fetchPostComments()
+            this.newComment = ''
         })
       },
       fetchPostComments: function(){
