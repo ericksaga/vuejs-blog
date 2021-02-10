@@ -40,17 +40,13 @@ export default {
     },
     methods: {
         getComments: function() {
-            fetch(`http://localhost:3000/comments?postId=${this.post.id}`).then((response) => {
-                response.json().then((resComments) => {
-                    this.comments = resComments;
-                })
+            this.axios.get(`/comments?postId=${this.post.id}`).then((resComments) => {
+                this.comments = resComments.data
             })
         },
         getLikes: function() {
-            fetch(`http://localhost:3000/likes?postId=${this.post.id}`).then((response) => {
-                response.json().then((resLikes) => {
-                    this.likes = resLikes;
-                })
+            this.axios.get(`/likes?postId=${this.post.id}`).then((resLikes) => {
+                this.likes = resLikes.data
             })
         }
     },

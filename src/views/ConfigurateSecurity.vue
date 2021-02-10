@@ -2,7 +2,6 @@
     <div class="configurateSecurity container">
         <div class="row">
             <div class="col-12">
-                <h1>Login</h1>
                 <ValidationObserver v-slot="{ invalid }">
                     <form @submit.prevent="changePassword()">
                         <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
@@ -48,43 +47,35 @@ export default {
     },
     methods: {
         changePassword: function() {
-            fetch(`http://localhost:3000/pass?id=${this.getUser.id}&password=${this.oldPassword}`).then((response) => {
-                response.json().then((resPass)=> {
-                    if(resPass.length > 0) {
-                        fetch(`http://localhost:3000/pass/${this.getUser.id}`, {
-                            method:'Put',
-                            headers:{
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                id: this.getUser.id,
-                                password: this.newPassword
+            this.axios.get(`/pass?id=${this.getUser.id}&password=${this.oldPassword}`).then((resPass) => {
+                if(resPass.data.length > 0) {
+                    this.axios.put(`/pass/${this.getUser.id}`, {
+                        id: this.getUser.id,
+                        password: this.newPassword
+                    }).then((response) => {
+                        if(response.status != 404) {
+                            this.$notify({
+                                group: 'foo',
+                                title: 'exito',
+                                text: 'La contraseña se ha cambiado con exito',
+                                type: 'success'
                             })
-                        }).then((response) => {
-                            if(response.status != 404) {
-                                this.$notify({
-                                    group: 'foo',
-                                    title: 'exito',
-                                    text: 'La contraseña se ha cambiado con exito',
-                                    type: 'success'
-                                })
-                                this.$router.push({
-                                    name: 'Profile',
-                                    params: {
-                                        userId:this.getUser.id
-                                    }
-                                })
-                            }
-                        })
-                    } else {
-                        this.$notify({
-                            group: 'foo',
-                            title: 'Contraseña incorrecta',
-                            text: 'La contraseña colocada no es correcta',
-                            type: 'error'
-                        })
-                    }
-                })
+                            this.$router.push({
+                                name: 'Profile',
+                                params: {
+                                    userId:this.getUser.id
+                                }
+                            })
+                        } else {
+                            this.$notify({
+                                group: 'foo',
+                                title: 'Contraseña incorrecta',
+                                text: 'La contraseña colocada no es correcta',
+                                type: 'error'
+                            })
+                        }
+                    })
+                }
             })
         }
     }

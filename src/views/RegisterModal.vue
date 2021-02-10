@@ -32,24 +32,21 @@ export default {
   },
   methods: {
     submitRegister: function() {
-      fetch(`http://localhost:3000/users?email=${this.email}`).then((response) => {
-        response.json().then((resUser) => {
-          if(resUser.lenght > 0) {
-            this.$toast.error({
-                title:'Error',
-                message:'El email esta en uso.'
-            })
-          } else {
-            this.$cookies.set("registerUser", {
-              email: this.email,
-              password: this.password
-            }, "1h");
-            //temporary solution for email form
-            console.log('ok')
-            this.$modal.hide('login-register')
-            this.$router.push({name:'CompleteRegister'})
-          }
-        })
+      this.axios.get(`/users?email=${this.email}`).then((resUser) => {
+        if(resUser.data.lenght > 0) {
+          this.$toast.error({
+            title:'Error',
+            message:'El email esta en uso.'
+          })
+        } else {
+          this.$cookies.set("registerUser", {
+            email: this.email,
+            password: this.password
+          }, "1h");
+          //temporary solution for email form
+          this.$modal.hide('login-register')
+          this.$router.push({name:'CompleteRegister'})
+        }
       })
     }
   },

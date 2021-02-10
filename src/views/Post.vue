@@ -63,125 +63,97 @@ import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
 import CryptoJS from 'crypto-js'
 export default {
-  components: { 
-      Comment,
-      VueEditor
+    components: { 
+        Comment,
+        VueEditor
     },
-  name: 'post',
-  data:function() {
-      return {
-          postId:this.$route.params.postId,
-          author:{},
-          post: {},
-          likes: [],
-          comments: [],
-          newComment: '',
-          focus: false,
-          avatarSource: ''
-      }
-  },
-  methods: {
-      clearEditor: function() {
-          this.newComment = ''
-      },
-      submitComment: function() {
-        fetch("http://localhost:3000/comments", {
-            method:'Post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                authorId: +this.getUser.id,
-                postId: +this.postId,
+    name: 'post',
+    data:function() {
+        return {
+            postId:this.$route.params.postId,
+            author:{},
+            post: {},
+            likes: [],
+            comments: [],
+            newComment: '',
+            focus: false,
+            avatarSource: ''
+        }
+    },
+    methods: {
+        clearEditor: function() {
+            this.newComment = ''
+        },
+        submitComment: function() {
+            this.axios.post(`/comments`, {
+                authorId: Number(this.getUser.id),
+                postId: Number(this.postId),
                 creationDate: new Date().toISOString(),
                 message: this.newComment,
                 likes: []
+            }).then(() => {
+                this.fetchPostComments()
+                this.clearEditor()
             })
-        }).then(() => {
-            this.fetchPostComments()
-            this.clearEditor()
-        })
-      },
-      fetchPostComments: function(){
-        fetch(`http://localhost:3000/comments?postId=${this.postId}`).then((response) => {
-            response.json().then((resComments) => {
-                this.comments = resComments
+        },
+        fetchPostComments: function(){
+            this.axios.get(`/comments?postId=${this.postId}`).then((resComments) => {
+                this.comments = resComments.data
             })
-        })
-      },
-      fetchPostLikes: function() {
-        fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
-            response.json().then((resLikes) => {
-                this.likes = resLikes.filter((like) => like.valid)
+        },
+        fetchPostLikes: function() {
+            this.axios.get(`/likes?postId=${this.postId}`).then((resLikes) => {
+                this.likes = resLikes.data.filter((like) => like.valid)
             })
-        })
-      },
-      fetchPostAuthor: function() {
-        fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
-            response.json().then((resUser) => {
-                this.author = resUser[0]
+        },
+        fetchPostAuthor: function() {
+            this.axios.get(`/users?id=${this.post.authorId}`).then((resUser) => {
+                this.author = resUser.data[0]
                 this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
             })
-        })
-      },
-      likePost: function() {
-          fetch(`http://localhost:3000/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((response) => {
-              response.json().then((resLike) => {
-                  if(resLike.length > 0) {
-                    resLike[0].valid = !resLike[0].valid;
-                    fetch(`http://localhost:3000/likes/${resLike[0].id}`, {
-                        method:'Put',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(resLike[0])
+        },
+        likePost: function() {
+            this.axios.get(`/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((resLike) => {
+                if(resLike.data.length > 0) {
+                    resLike.data[0].valid = !resLike.data[0].valid;
+                    this.axios.put(`/likes/${resLike.data[0].id}`, resLike.data[0]).then(() => {
+                        this.fetchPostLikes()
+                    })
+                } else {
+                    this.axios.post(`/likes`,{
+                        userId: this.getUser.id,
+                        postId: this.post.id,
+                        valid: true,
+                        creationDate: new Date().toISOString()
                     }).then(() => {
                         this.fetchPostLikes()
                     })
-                  } else {
-                      fetch(`http://localhost:3000/likes`, {
-                        method:'Post',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            userId: this.getUser.id,
-                            postId: this.post.id,
-                            valid: true,
-                            creationDate: new Date().toISOString()
-                        })
-                    }).then(() => {
-                        this.fetchPostLikes()
-                    })
-                  }
-              })
-          })
-      }
-  },
-  computed: {
-      ...mapGetters([
-          'getUser'
-      ]),
-      likesCount: function() {
-          return this.likes.length
-      },
-      commentsCount: function() {
-          return this.comments.length
-      },
-      userLiked: function() {
-          return this.likes.find((like) => like.userId == this.getUser.id)
-      }
-  },
-  beforeMount: function() {
-    fetch(`http://localhost:3000/posts?id=${this.postId}`).then((response) => {
-        response.json().then((resPost) => {
-            this.post = resPost[0]
+                }
+            })
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'getUser'
+        ]),
+        likesCount: function() {
+            return this.likes.length
+        },
+        commentsCount: function() {
+            return this.comments.length
+        },
+        userLiked: function() {
+            return this.likes.find((like) => like.userId == this.getUser.id)
+        }
+    },
+    beforeMount: function() {
+        this.axios.get(`/posts?id=${this.postId}`).then((resPost) => {
+            this.post = resPost.data[0]
             this.fetchPostAuthor()
             this.fetchPostComments()
             this.fetchPostLikes()
         })
-    })
-  }
+    }
 }
 </script>
 

@@ -28,7 +28,7 @@ import { mapGetters } from 'vuex'
 import PostSummary from '../components/PostSummary.vue'
 export default {
   components: { PostSummary },
-    name:'deletedd-posts',
+    name:'deleted-posts',
     data: function() {
         return {
 

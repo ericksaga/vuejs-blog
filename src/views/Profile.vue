@@ -85,13 +85,11 @@ export default {
     },
     beforeMount: function() {
         this.fetchPosts();
-        fetch(`http://localhost:3000/users/${this.userId}`).then((response) => {
-            response.json().then((resUser) => {
-                if(resUser) {
-                    this.user = resUser
-                    this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.user.email)}?d=${this.user.avatar?this.user.avatar:'mp'}&&f=y`
-                }
-            })
+        this.axios.get(`/users/${this.userId}`).then((resUser) => {
+            if(resUser.data) {
+                this.user = resUser.data
+                this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.user.email)}?d=${this.user.avatar?this.user.avatar:'mp'}&&f=y`
+            }
         })
     }
 }

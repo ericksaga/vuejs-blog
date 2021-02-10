@@ -68,19 +68,13 @@ export default {
     },
     methods: {
         updateComment: function() {
-            fetch(`http://localhost:3000/comments/${this.comment.id}`, {
-                method:'Put',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: this.comment.id,
-                    authorId: this.comment.authorId,
-                    postId: this.comment.postId,
-                    creationDate: this.comment.creationDate,
-                    message: this.updatedComment,
-                    likes: this.comment.likes
-                })
+            this.axios.put(`/comments/${this.comment.id}`, {
+                id: this.comment.id,
+                authorId: this.comment.authorId,
+                postId: this.comment.postId,
+                creationDate: this.comment.creationDate,
+                message: this.updatedComment,
+                likes: this.comment.likes
             }).then(() => {
                 this.comment.message = this.updatedComment
                 this.edit = false;
@@ -91,20 +85,16 @@ export default {
             this.updatedComment = this.comment.message
         },
         deleteComment: function() {
-            fetch(`http://localhost:3000/comments/${this.comment.id}`, {
-                method:'Delete'
-            }).then(() => {
+            this.axios.delete(`/comments/${this.comment.id}`).then(() => {
                 this.$emit('updateComments')
             })
         }
     },
     beforeMount: function() {
         this.updatedComment = this.comment.message
-        fetch(`http://localhost:3000/users?id=${this.comment.authorId}`).then((response) => {
-            response.json().then((resUser) => {
-                this.author = resUser[0];
-                this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
-            })
+        this.axios.get(`/users?id=${this.comment.authorId}`).then((resUser) => {
+            this.author = resUser.data[0]
+            this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
         })
     }
 }

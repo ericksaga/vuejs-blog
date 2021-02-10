@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import axios from 'axios'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -38,72 +38,47 @@ export default new Vuex.Store({
   },
   actions: {
     fetchPosts(context) {
-      fetch("http://localhost:3000/posts").then((response) => {
-        response.json().then((resPost) => {
-          context.commit('uploadPosts', {
-            posts: resPost
-          })
+      axios.get('/posts').then((response) => {
+        context.commit('uploadPosts', {
+          posts: response.data
         })
-      }, () => {
-        //in case of fail
       })
     },
     logIn(context, args) {
       return new Promise( function(resolve, reject) {
-        fetch(`http://localhost:3000/users?email=${args.email}`).then((response) => {
-          response.json().then((resUser) => {
-            if(resUser[0]){
-              fetch(`http://localhost:3000/pass?id=${resUser[0].id}&pass=${args.pass}`).then((passResponse) => {
-                passResponse.json().then((res) => {
-                  if(res[0]) {
-                    context.commit('updateUser', {
-                      user: resUser[0]
-                    })
-                    resolve('')
-                  } else {
-                    reject('Contraseña incorrecta')
-                  }
+        axios.get(`/users?email=${args.email}`).then((resUser) => {
+          if(resUser.data[0]) {
+            axios.get(`/pass?id=${resUser.data[0].id}&password=${args.pass}`).then((passRes) => {
+              if(passRes.data[0]) {
+                context.commit('updateUser', {
+                  user: resUser.data[0]
                 })
-              })
-            } else {
-              reject('El usuario no fue encontrado')
-            }
-          })
+                resolve('')
+              } else {
+                reject('Contraseña incorrecta')
+              }
+            })
+          } else {
+            reject('El usuario no fue encontrado')
+          }
         })
       })
     },
     updateUser(context, args) {
-      fetch(`http://localhost:3000/users/${args.user.id}`, {
-        method:'Put',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(args.user)
-      }).then(() => {
+      axios.put(`/users/${args.user.id}`, args.user).then(() => {
         context.commit('updateUser', {
           user: args.user
         })
       })
     },
     registerUser(context, args) {
-      fetch(`http://localhost:3000/users`, {
-        method:'Post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(args.user)
-      }).then((response) => {
-        response.json().then((resUser) => {
-          context.commit('updateUser', {
-            user: resUser
-          })
-          fetch(`http://localhost:3000/pass`, {
-            method:'Post',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({id: resUser.id, password: args.password})
-          })
+      axios.post('/users', args.user).then((resUser) => {
+        context.commit('updateUser', {
+          user: resUser.data
+        })
+        axios.post('/pass', {
+          id: resUser.data.id,
+          password: args.password
         })
       })
     }

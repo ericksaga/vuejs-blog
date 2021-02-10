@@ -66,10 +66,8 @@ export default {
   },
   beforeMount: function() {
     if(this.$cookies.isKey("userId")) {
-      fetch(`http://localhost:3000/users/${this.$cookies.get("userId")}`).then((response) => {
-        response.json().then((resUser) => {
-          this.updateUser({user: resUser});
-        })
+      this.axios.get(`/users/${this.$cookies.get("userId")}`).then((resUser) => {
+        this.updateUser({user: resUser.data})
       })
     }
   }

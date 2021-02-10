@@ -142,33 +142,31 @@ export default {
             'registerUser'
         ]),
         submitUser: function() {
-            fetch(`http://localhost:3000/users?username=${this.newUsername}`).then(response => {
-                response.json().then((res) => {
-                    if(res.length > 0) {
-                        this.$notify({
-                            group: 'foo',
-                            title: 'Usuario en uso',
-                            text: 'El nombre de usuario que coloco ya esta en uso',
-                            type: 'error'
-                        })
-                    } else {
-                        this.registerUser({
-                            user: {
-                                email: this.email,
-                                username: this.newUsername,
-                                firstName: this.newFirstName,
-                                lastName: this.newLastName,
-                                description: this.newDescription,
-                                private: this.privacy,
-                                avatar: this.newAvatar
-                            },
-                            password: this.password
-                        })
-                        this.$router.push({
-                            name: 'CreatePost'
-                        })
-                    }
-                })
+            this.axios.get(`/users?username=${this.newUsername}`).then((resUser) => {
+                if(resUser.data > 0) {
+                    this.$notify({
+                        group: 'foo',
+                        title: 'Usuario en uso',
+                        text: 'El nombre de usuario que coloco ya esta en uso',
+                        type: 'error'
+                    })   
+                } else {
+                    this.registerUser({
+                        user: {
+                            email: this.email,
+                            username: this.newUsername,
+                            firstName: this.newFirstName,
+                            lastName: this.newLastName,
+                            description: this.newDescription,
+                            private: this.privacy,
+                            avatar: this.newAvatar
+                        },
+                        password: this.password
+                    })
+                    this.$router.push({
+                        name: 'CreatePost'
+                    })
+                }
             })
         },
         resetInput: function() {

@@ -41,14 +41,12 @@ export default {
         ])
     },
     beforeMount: function() {
-        fetch(`http://localhost:3000/comments?authorId=${this.userId}`).then((response) => {
-            response.json().then((resComments) => {
-                for(let comment of resComments) {
-                    if(!this.commentedPosts.find((post) => post.id == comment.postId)) {
-                        this.commentedPosts.push(this.homePosts.find((post) => post.id == comment.postId));
-                    }
+        this.axios.get(`/comments?authorId=${this.userId}`).then((resComments) => {
+            for(let comment of resComments.data) {
+                if(!this.commentedPosts.find((post) => post.id == comment.postId)) {
+                    this.commentedPosts.push(this.homePosts.find((post) => post.id == comment.postId));
                 }
-            })
+            }
         })
     }
 }

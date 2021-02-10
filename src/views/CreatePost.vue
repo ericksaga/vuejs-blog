@@ -69,13 +69,7 @@ export default {
                 this.post.drafted = false
                 this.post.deleted = false
                 this.post.publicationDate = this.post.publicationDate?this.post.publicationDate:new Date().toISOString()
-                fetch(`http://localhost:3000/posts/${this.postId}`, {
-                    method:'Put',
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(this.post)
-                }).then(() => {
+                this.axios.put(`/posts/${this.postId}`, this.post).then(() => {
                     this.$toast.success({
                         title:'Exito',
                         message:'El post ha sido publicado.'
@@ -89,22 +83,16 @@ export default {
                 })
             }
             else {
-                fetch("http://localhost:3000/posts", {
-                    method:'Post',
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        authorId: this.getUser.id,
-                        title: this.title,
-                        message: this.postBody,
-                        creationDate: new Date().toISOString(),
-                        publicationDate: new Date().toISOString(),
-                        edited: false,
-                        drafted: false,
-                        deleted: false,
-                        acceptComments: this.acceptComments,
-                    })
+                this.axios.post(`/post`, {
+                    authorId: this.getUser.id,
+                    title: this.title,
+                    message: this.postBody,
+                    creationDate: new Date().toISOString(),
+                    publicationDate: new Date().toISOString(),
+                    edited: false,
+                    drafted: false,
+                    deleted: false,
+                    acceptComments: this.acceptComments,
                 }).then(() => {
                     this.$toast.success({
                         title:'Exito',
@@ -125,31 +113,19 @@ export default {
                 this.post.title = this.title
                 this.post.acceptComments = this.acceptComments
                 this.post.edited = true
-                fetch(`http://localhost:3000/posts/${this.postId}`, {
-                    method:'Put',
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(this.post)
-                })
+                this.axios.put(`/posts/${this.postId}`, this.post)
             }
             else if(!this.postId) {
-                fetch("http://localhost:3000/posts", {
-                    method:'Post',
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        authorId: this.getUser.id,
-                        title: this.title,
-                        message: this.postBody,
-                        creationDate: new Date().toISOString(),
-                        publicationDate: null,
-                        edited: false,
-                        deleted: false,
-                        drafted: true,
-                        acceptComments: this.acceptComments,
-                    })
+                this.axios.post(`/posts`, {
+                    authorId: this.getUser.id,
+                    title: this.title,
+                    message: this.postBody,
+                    creationDate: new Date().toISOString(),
+                    publicationDate: null,
+                    edited: false,
+                    deleted: false,
+                    drafted: true,
+                    acceptComments: this.acceptComments,
                 }).then(() => {
                     this.$toast.success({
                         title:'Exito',
@@ -164,9 +140,9 @@ export default {
                 })
             } else {
                 this.$toast.warn({
-                        title:'Advertencia',
-                        message:'El post ya ha sido publicado.'
-                    })
+                    title:'Advertencia',
+                    message:'El post ya ha sido publicado.'
+                })
             }
         },
         cancelPost: function() {
@@ -180,13 +156,11 @@ export default {
     },
     beforeMount: function() {
         if(this.postId) {
-            fetch(`http://localhost:3000/posts/${this.postId}`).then((response) => {
-                response.json().then((resPost) => {
-                    this.post = resPost;
-                    this.postBody = resPost.message;
-                    this.title = resPost.title;
-                    this.acceptComments = resPost.acceptComments;
-                })
+            this.axios.get(`/posts/${this.postId}`).then((resPost) => {
+                this.post = resPost.data;
+                this.postBody = resPost.data.message;
+                this.title = resPost.data.title;
+                this.acceptComments = resPost.data.acceptComments;
             })
         }
     },
