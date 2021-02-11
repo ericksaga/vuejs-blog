@@ -29,9 +29,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
-                <!-- <i class="bi bi-hand-thumbs-up-fill"></i> !-->
-                <i class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
+            <div class="col-6" @click="likeComment">
+                <i v-if="userLiked" class="bi bi-hand-thumbs-up-fill"> {{ likesCount }} </i>
+                <i v-else class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
             </div>
       </div>
     </div>
@@ -55,7 +55,8 @@ export default {
             focus: false,
             edit: false,
             updatedComment: '',
-            avatarSource:''
+            avatarSource:'',
+            commentLikes: []
         }
     },
     computed: {
@@ -63,7 +64,10 @@ export default {
             'getUser'
         ]),
         likesCount: function() {
-            return this.comment.likes.length
+            return this.commentLikes.length
+        },
+        userLiked: function() {
+            return this.commentLikes.find((like) => like.userId == this.getUser.id)
         }
     },
     methods: {
@@ -88,6 +92,30 @@ export default {
             this.axios.delete(`/comments/${this.comment.id}`).then(() => {
                 this.$emit('updateComments')
             })
+        },
+        fetchCommentLikes() {
+            this.axios.get(`/commentLikes?commentId=${this.comment.id}&valid=true`).then((resLikes) => {
+                this.commentLikes = resLikes.data
+            })
+        },
+        likeComment() {
+            this.axios.get(`/commentLikes?commentId=${this.comment.id}&userId=${this.getUser.id}`).then((resLike) => {
+                if(resLike.data.length > 0) {
+                    resLike.data[0].valid = !resLike.data[0].valid;
+                    this.axios.put(`/commentLikes/${resLike.data[0].id}`, resLike.data[0]).then(() => {
+                        this.fetchCommentLikes()
+                    })
+                } else {
+                    this.axios.post(`/commentLikes`,{
+                        userId: this.getUser.id,
+                        commentId: this.comment.id,
+                        valid: true,
+                        creationDate: new Date().toISOString()
+                    }).then(() => {
+                        this.fetchCommentLikes()
+                    })
+                }
+            })
         }
     },
     beforeMount: function() {
@@ -96,6 +124,7 @@ export default {
             this.author = resUser.data[0]
             this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
         })
+        this.fetchCommentLikes()
     }
 }
 </script>

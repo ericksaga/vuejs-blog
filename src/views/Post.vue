@@ -102,8 +102,8 @@ export default {
             })
         },
         fetchPostLikes: function() {
-            this.axios.get(`/likes?postId=${this.postId}`).then((resLikes) => {
-                this.likes = resLikes.data.filter((like) => like.valid)
+            this.axios.get(`/likes?postId=${this.postId}&valid=true`).then((resLikes) => {
+                this.likes = resLikes.data
             })
         },
         fetchPostAuthor: function() {

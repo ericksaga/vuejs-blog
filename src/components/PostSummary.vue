@@ -45,7 +45,7 @@ export default {
             })
         },
         getLikes: function() {
-            this.axios.get(`/likes?postId=${this.post.id}`).then((resLikes) => {
+            this.axios.get(`/likes?postId=${this.post.id}&valid=true`).then((resLikes) => {
                 this.likes = resLikes.data
             })
         }

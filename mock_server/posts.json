@@ -157,5 +157,21 @@
       "creationDate": "2021-02-09T16:33:47.187Z",
       "id": 3
     }
+  ],
+  "commentLikes": [
+    {
+      "userId": 1,
+      "commentId": 4,
+      "valid": false,
+      "creationDate": "2021-02-11T17:06:25.596Z",
+      "id": 1
+    },
+    {
+      "userId": 1,
+      "commentId": 6,
+      "valid": false,
+      "creationDate": "2021-02-11T17:06:29.042Z",
+      "id": 2
+    }
   ]
 }
