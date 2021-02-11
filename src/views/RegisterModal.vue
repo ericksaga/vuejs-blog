@@ -24,6 +24,7 @@
 <script>
 // @ is an alias to /src
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import Cookies from 'js-cookie'
 export default {
   name: 'register-modal',
   components: {
@@ -39,10 +40,11 @@ export default {
             message:'El email esta en uso.'
           })
         } else {
-          this.$cookies.set("registerUser", {
+          let expire1h = 1/24;
+          Cookies.set("registerUser", {
             email: this.email,
             password: this.password
-          }, "1h");
+          }, {expires: expire1h});
           //temporary solution for email form
           this.$modal.hide('login-register')
           this.$router.push({name:'CompleteRegister'})

@@ -120,6 +120,7 @@
 <script>
 import { mapActions } from 'vuex'
 import CryptoJS from 'crypto-js'
+import Cookies from 'js-cookie'
 export default {
     name:'complete-register',
     data: function() {
@@ -179,7 +180,7 @@ export default {
         }
     },
     beforeMount: function() {
-        if(!this.$cookies.isKey("registerUser")) {
+        if(Cookies.get("registerUser")) {
             this.$toast.error({
                 title:'Error',
                 message:'El registro expiro.'
@@ -187,8 +188,8 @@ export default {
             this.$router.push({name:'Home'})
         }
         else {
-            this.email = this.$cookies.get("registerUser").email
-            this.password = this.$cookies.get("registerUser").password
+            this.email = Cookies.getJSON("registerUser").email
+            this.password = Cookies.getJSON("registerUser").password
             this.avatarSourceRoot = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.email)}?f=y&&d=`
             this.resetInput();
         }

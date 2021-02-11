@@ -36,6 +36,7 @@
 import RegisterModal from '../views/RegisterModal.vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapActions, mapGetters } from 'vuex'
+import Cookies from 'js-cookie'
 export default {
   name: 'login-modal',
   components: {
@@ -50,10 +51,10 @@ export default {
     submitLogin: function(user) {
         this.logIn(user).then(() => {
             if(this.rememberMe) {
-                this.$cookies.set("userId", this.getUser.id, "30d");
+                Cookies.set("userId", this.getUser.id, {expires: 30});
             }
             else {
-                this.$cookies.set("userId", this.getUser.id, 0);
+                Cookies.set("userId", this.getUser.id);
             }
             this.loginError = ''
         }, (error) => {
