@@ -2,7 +2,7 @@
 <div class="post container">
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
-            <div class="float-end" v-if="focus && getUser.id==post.authorId">
+            <div class="float-end" v-if="postFocus">
                 <i class="bi bi-x-square float-end"></i>
                 <i class="bi bi-pencil-square" @click="$router.push({name:'EditPost', params:{'postId':postId}})"></i>
             </div>
@@ -144,6 +144,9 @@ export default {
         },
         userLiked: function() {
             return this.likes.find((like) => like.userId == this.getUser.id)
+        },
+        postFocus() {
+            return this.focus && this.getUser.id == this.post.authorId
         }
     },
     beforeMount: function() {

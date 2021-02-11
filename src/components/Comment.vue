@@ -15,7 +15,7 @@
             </div>
             <div class="col-8">
                 <div v-if="!edit">
-                    <div class="float-end" v-if="focus && getUser.id == comment.authorId">
+                    <div class="float-end" v-if="commentFocus">
                         <i class="bi bi-x-square" @click="deleteComment"></i>
                         <i class="bi bi-pencil-square" @click="edit=true"></i>
                     </div>
@@ -68,6 +68,9 @@ export default {
         },
         userLiked: function() {
             return this.commentLikes.find((like) => like.userId == this.getUser.id)
+        },
+        commentFocus() {
+            return this.focus && this.getUser.id == this.comment.authorId
         }
     },
     methods: {
