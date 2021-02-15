@@ -43,9 +43,9 @@ export default {
     beforeMount: function() {
         this.axios.get(`/likes?userId=${this.userId}&valid=true`).then((resLikes) => {
             for(let like of resLikes.data) {
-                if(!this.likedPosts.find((post) => post.id == like.postId)) {
-                    this.likedPosts.push(this.homePosts.find((post) => post.id == like.postId));
-                }
+                this.axios.get(`/posts/${like.postId}`).then((resPost) => {
+                    this.likedPosts.push(resPost.data)
+                })
             }
         })
     }

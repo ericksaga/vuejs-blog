@@ -3,7 +3,7 @@
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
             <div class="float-end" v-if="postFocus">
-                <i class="bi bi-x-square float-end"></i>
+                <i class="bi bi-x-square float-end" @click="deletePost"></i>
                 <i class="bi bi-pencil-square" @click="$router.push({name:'EditPost', params:{'postId':postId}})"></i>
             </div>
             <h1> {{ post.title }} </h1>
@@ -50,10 +50,21 @@
         </div>
     </div>
     <h2>Comentarios</h2>
-    <comment v-for="uComment in comments" 
-    :comment="uComment"
-    v-on:updateComments="fetchPostComments"
-    :key="uComment.id"/>
+    <a @click="ascending=!ascending">
+        orden: {{ascending?'ascendente':'descendente'}}
+    </a>
+    <div v-if="ascending">
+        <comment v-for="uComment in ascendingComments" 
+        :comment="uComment"
+        v-on:updateComments="fetchPostComments"
+        :key="uComment.id"/>
+    </div>
+    <div v-else>
+        <comment v-for="uComment in descendingComments" 
+        :comment="uComment"
+        v-on:updateComments="fetchPostComments"
+        :key="uComment.id"/>
+    </div>
   </div>
 </template>
 
@@ -77,7 +88,8 @@ export default {
             comments: [],
             newComment: '',
             focus: false,
-            avatarSource: ''
+            avatarSource: '',
+            ascending: true
         }
     },
     methods: {
@@ -130,6 +142,16 @@ export default {
                     })
                 }
             })
+        },
+        deletePost() {
+            this.post.deleted = true;
+            this.axios.put(`/posts/${this.postId}`, this.post).then(() => {
+                this.$toast.success({
+                    title:'Exito',
+                    message:'El post ha sido eliminado.'
+                })
+                this.$router.push({name:'MyPosts'})
+            })
         }
     },
     computed: {
@@ -147,6 +169,16 @@ export default {
         },
         postFocus() {
             return this.focus && this.getUser.id == this.post.authorId
+        },
+        ascendingComments() {
+            let comment = [...this.comments]
+            comment.sort((a, b) => a.id - b.id)
+            return comment;
+        },
+        descendingComments() {
+            let comment = [...this.comments]
+            comment.sort((a, b) => b.id - a.id)
+            return comment;
         }
     },
     beforeMount: function() {

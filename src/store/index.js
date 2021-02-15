@@ -39,6 +39,11 @@ export default new Vuex.Store({
   actions: {
     fetchPosts(context) {
       axios.get('/posts').then((response) => {
+        response.data.sort((a, b) => {
+          let aDate = new Date(a.publicationDate?a.publicationDate:a.creationDate)
+          let bDate = new Date(b.publicationDate?b.publicationDate:b.creationDate)
+          return bDate - aDate
+        })
         context.commit('uploadPosts', {
           posts: response.data
         })

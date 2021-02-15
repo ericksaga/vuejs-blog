@@ -31,7 +31,7 @@
                 </router-link>
             </div>
             <div class="col-8"> 
-                <div v-html="post.message"/>
+                <div v-html="postBody"/>
             </div>
         </div>
         <p v-if="post.edited">edited</p>
@@ -119,6 +119,9 @@ export default {
       },
       userLiked: function() {
           return this.likes.find((like) => like.userId == this.getUser.id)
+      },
+      postBody() {
+        return this.post.message.length > 200?this.post.message.slice(0, 200):this.post.message
       }
   },
   beforeMount: function() {

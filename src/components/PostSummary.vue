@@ -2,7 +2,7 @@
     <tr class="PostSummary">
         <td> {{ post.id }} </td>
         <td> 
-            <router-link :to="'/createPost/'+post.id">
+            <router-link :to="'/post/'+post.id">
                 {{ post.title }} 
             </router-link>
         </td>
