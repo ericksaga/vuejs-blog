@@ -145,6 +145,22 @@
       "creationDate": "2021-02-10T21:57:01.839Z",
       "message": "<p>new comment!!!</p>",
       "likes": []
+    },
+    {
+      "authorId": 1,
+      "postId": 1,
+      "creationDate": "2021-02-16T00:21:03.570Z",
+      "message": "<p>@a @b @c</p>",
+      "likes": [],
+      "id": 7
+    },
+    {
+      "authorId": 1,
+      "postId": 3,
+      "creationDate": "2021-02-17T15:54:22.946Z",
+      "message": "<p><a href=\"/profile/1\">@a</a> <a href=\"/profile/2\">@b</a> <a href=\"/profile/3\">@c</a></p>",
+      "likes": [],
+      "id": 8
     }
   ],
   "likes": [

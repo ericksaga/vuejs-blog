@@ -96,12 +96,13 @@ export default {
         clearEditor: function() {
             this.newComment = ''
         },
-        submitComment: function() {
+        async submitComment() {
+            let body = await this.addMentions();
             this.axios.post(`/comments`, {
                 authorId: Number(this.getUser.id),
                 postId: Number(this.postId),
                 creationDate: new Date().toISOString(),
-                message: this.newComment,
+                message: body,
                 likes: []
             }).then(() => {
                 this.fetchPostComments()
@@ -151,6 +152,29 @@ export default {
                     message:'El post ha sido eliminado.'
                 })
                 this.$router.push({name:'MyPosts'})
+            })
+        },
+        addMentions() {
+            let mentionRegex = /@([a-zA-Z_0-9]+)/g
+            let body = this.newComment.slice();
+            let userPromisesArray = []
+            for(let mention of this.newComment.matchAll(mentionRegex)) {
+                userPromisesArray.push(new Promise((resolve) => {
+                    this.axios.get(`/users?username=${mention[1]}`).then((resUser) => {
+                        resolve({
+                            username: mention[0],
+                            id: resUser.data[0].id
+                        })
+                    })
+                }))
+            }
+            return new Promise((resolve) => {
+                Promise.all(userPromisesArray).then((val) => {
+                    for(let user of val) {
+                        body = body.replace(user.username, `<a href="/profile/${user.id}">${user.username}</a>`)
+                    }
+                    resolve(body)
+                })
             })
         }
     },
