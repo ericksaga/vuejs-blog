@@ -163,7 +163,7 @@ export default {
                     this.axios.get(`/users?username=${mention[1]}`).then((resUser) => {
                         resolve({
                             username: mention[0],
-                            id: resUser.data[0].id
+                            id: resUser.data[0]?.id
                         })
                     })
                 }))
@@ -171,7 +171,9 @@ export default {
             return new Promise((resolve) => {
                 Promise.all(userPromisesArray).then((val) => {
                     for(let user of val) {
-                        body = body.replace(user.username, `<a href="/profile/${user.id}">${user.username}</a>`)
+                        if(user.id) {
+                            body = body.replace(user.username, `<a href="/#/profile/${user.id}">${user.username}</a>`)
+                        }
                     }
                     resolve(body)
                 })

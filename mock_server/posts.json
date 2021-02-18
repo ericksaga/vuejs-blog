@@ -39,6 +39,16 @@
       "private": "",
       "avatar": "mp",
       "id": 4
+    },
+    {
+      "email": "erickmedina09@gmail.com",
+      "username": "ericksaga",
+      "firstName": "erick",
+      "lastName": "m",
+      "description": "casula",
+      "private": true,
+      "avatar": "retro",
+      "id": 5
     }
   ],
   "pass": [
@@ -56,6 +66,10 @@
     },
     {
       "id": 4,
+      "password": "123456789"
+    },
+    {
+      "id": 5,
       "password": "123456789"
     }
   ],
@@ -157,8 +171,8 @@
     {
       "authorId": 1,
       "postId": 3,
-      "creationDate": "2021-02-17T15:54:22.946Z",
-      "message": "<p><a href=\"/profile/1\">@a</a> <a href=\"/profile/2\">@b</a> <a href=\"/profile/3\">@c</a></p>",
+      "creationDate": "2021-02-17T18:47:22.911Z",
+      "message": "<p><a href=\"/#/profile/1\">@a</a> <a href=\"/#/profile/2\">@b</a> <a href=\"/#/profile/3\">@c</a> @x</p>",
       "likes": [],
       "id": 8
     }

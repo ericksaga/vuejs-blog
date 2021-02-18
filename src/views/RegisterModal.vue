@@ -41,13 +41,33 @@ export default {
           })
         } else {
           let expire1h = 1/24;
-          Cookies.set("registerUser", {
-            email: this.email,
-            password: this.password
-          }, {expires: expire1h});
-          //temporary solution for email form
-          this.$modal.hide('login-register')
-          this.$router.push({name:'CompleteRegister'})
+          if(!Cookies.get("registerUser")){
+            Cookies.set("registerUser", {
+              email: this.email,
+              password: this.password
+            }, {expires: expire1h});
+          } else {
+            Cookies.remove("registerUser")
+            Cookies.set("registerUser", {
+              email: this.email,
+              password: this.password
+            }, {expires: expire1h});
+          }
+          this.axios.post('https://api.emailjs.com/api/v1.0/email/send', {
+            service_id: 'service_jy90qmj',
+            template_id: 'template_ooidvlo',
+            user_id: 'user_tmMKNd0N6HwyyuEJf1CfU',
+            template_params: {
+              'email': this.email,
+              'link': `http://localhost:8080/#/completeRegistration`
+            }
+          }).then(() => {
+            this.$toast.info({
+              title:'Informacion',
+              message:'El Correo ha sido enviado.'
+            })
+            this.$modal.hide('login-register')
+          })
         }
       })
     }
