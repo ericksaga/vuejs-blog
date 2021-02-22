@@ -2,8 +2,8 @@
 <div class="post container">
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
-            <div class="float-end" v-if="focus && getUser.id==post.authorId">
-                <i class="bi bi-x-square float-end"></i>
+            <div class="float-end" v-if="postFocus">
+                <i class="bi bi-x-square float-end" @click="deletePost"></i>
                 <i class="bi bi-pencil-square" @click="$router.push({name:'EditPost', params:{'postId':postId}})"></i>
             </div>
             <h1> {{ post.title }} </h1>
@@ -50,10 +50,21 @@
         </div>
     </div>
     <h2>Comentarios</h2>
-    <comment v-for="uComment in comments" 
-    :comment="uComment"
-    v-on:updateComments="fetchPostComments"
-    :key="uComment.id"/>
+    <a @click="ascending=!ascending">
+        orden: {{ascending?'ascendente':'descendente'}}
+    </a>
+    <div v-if="ascending">
+        <comment v-for="uComment in ascendingComments" 
+        :comment="uComment"
+        v-on:updateComments="fetchPostComments"
+        :key="uComment.id"/>
+    </div>
+    <div v-else>
+        <comment v-for="uComment in descendingComments" 
+        :comment="uComment"
+        v-on:updateComments="fetchPostComments"
+        :key="uComment.id"/>
+    </div>
   </div>
 </template>
 
@@ -63,125 +74,147 @@ import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
 import CryptoJS from 'crypto-js'
 export default {
-  components: { 
-      Comment,
-      VueEditor
+    components: { 
+        Comment,
+        VueEditor
     },
-  name: 'post',
-  data:function() {
-      return {
-          postId:this.$route.params.postId,
-          author:{},
-          post: {},
-          likes: [],
-          comments: [],
-          newComment: '',
-          focus: false,
-          avatarSource: ''
-      }
-  },
-  methods: {
-      clearEditor: function() {
-          this.newComment = ''
-      },
-      submitComment: function() {
-        fetch("http://localhost:3000/comments", {
-            method:'Post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                authorId: +this.getUser.id,
-                postId: +this.postId,
+    name: 'post',
+    data:function() {
+        return {
+            postId:this.$route.params.postId,
+            author:{},
+            post: {},
+            likes: [],
+            comments: [],
+            newComment: '',
+            focus: false,
+            avatarSource: '',
+            ascending: true
+        }
+    },
+    methods: {
+        clearEditor: function() {
+            this.newComment = ''
+        },
+        async submitComment() {
+            let body = await this.addMentions();
+            this.axios.post(`/comments`, {
+                authorId: Number(this.getUser.id),
+                postId: Number(this.postId),
                 creationDate: new Date().toISOString(),
-                message: this.newComment,
+                message: body,
                 likes: []
+            }).then(() => {
+                this.fetchPostComments()
+                this.clearEditor()
             })
-        }).then(() => {
-            this.fetchPostComments()
-            this.clearEditor()
-        })
-      },
-      fetchPostComments: function(){
-        fetch(`http://localhost:3000/comments?postId=${this.postId}`).then((response) => {
-            response.json().then((resComments) => {
-                this.comments = resComments
+        },
+        fetchPostComments: function(){
+            this.axios.get(`/comments?postId=${this.postId}`).then((resComments) => {
+                this.comments = resComments.data
             })
-        })
-      },
-      fetchPostLikes: function() {
-        fetch(`http://localhost:3000/likes?postId=${this.postId}`).then((response) => {
-            response.json().then((resLikes) => {
-                this.likes = resLikes.filter((like) => like.valid)
+        },
+        fetchPostLikes: function() {
+            this.axios.get(`/likes?postId=${this.postId}&valid=true`).then((resLikes) => {
+                this.likes = resLikes.data
             })
-        })
-      },
-      fetchPostAuthor: function() {
-        fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
-            response.json().then((resUser) => {
-                this.author = resUser[0]
+        },
+        fetchPostAuthor: function() {
+            this.axios.get(`/users?id=${this.post.authorId}`).then((resUser) => {
+                this.author = resUser.data[0]
                 this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
             })
-        })
-      },
-      likePost: function() {
-          fetch(`http://localhost:3000/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((response) => {
-              response.json().then((resLike) => {
-                  if(resLike.length > 0) {
-                    resLike[0].valid = !resLike[0].valid;
-                    fetch(`http://localhost:3000/likes/${resLike[0].id}`, {
-                        method:'Put',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(resLike[0])
+        },
+        likePost: function() {
+            this.axios.get(`/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((resLike) => {
+                if(resLike.data.length > 0) {
+                    resLike.data[0].valid = !resLike.data[0].valid;
+                    this.axios.put(`/likes/${resLike.data[0].id}`, resLike.data[0]).then(() => {
+                        this.fetchPostLikes()
+                    })
+                } else {
+                    this.axios.post(`/likes`,{
+                        userId: this.getUser.id,
+                        postId: this.post.id,
+                        valid: true,
+                        creationDate: new Date().toISOString()
                     }).then(() => {
                         this.fetchPostLikes()
                     })
-                  } else {
-                      fetch(`http://localhost:3000/likes`, {
-                        method:'Post',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            userId: this.getUser.id,
-                            postId: this.post.id,
-                            valid: true,
-                            creationDate: new Date().toISOString()
+                }
+            })
+        },
+        deletePost() {
+            this.post.deleted = true;
+            this.axios.put(`/posts/${this.postId}`, this.post).then(() => {
+                this.$toast.success({
+                    title:'Exito',
+                    message:'El post ha sido eliminado.'
+                })
+                this.$router.push({name:'MyPosts'})
+            })
+        },
+        addMentions() {
+            let mentionRegex = /@([a-zA-Z_0-9]+)/g
+            let body = this.newComment.slice();
+            let userPromisesArray = []
+            for(let mention of this.newComment.matchAll(mentionRegex)) {
+                userPromisesArray.push(new Promise((resolve) => {
+                    this.axios.get(`/users?username=${mention[1]}`).then((resUser) => {
+                        resolve({
+                            username: mention[0],
+                            id: resUser.data[0]?.id
                         })
-                    }).then(() => {
-                        this.fetchPostLikes()
                     })
-                  }
-              })
-          })
-      }
-  },
-  computed: {
-      ...mapGetters([
-          'getUser'
-      ]),
-      likesCount: function() {
-          return this.likes.length
-      },
-      commentsCount: function() {
-          return this.comments.length
-      },
-      userLiked: function() {
-          return this.likes.find((like) => like.userId == this.getUser.id)
-      }
-  },
-  beforeMount: function() {
-    fetch(`http://localhost:3000/posts?id=${this.postId}`).then((response) => {
-        response.json().then((resPost) => {
-            this.post = resPost[0]
+                }))
+            }
+            return new Promise((resolve) => {
+                Promise.all(userPromisesArray).then((val) => {
+                    for(let user of val) {
+                        if(user.id) {
+                            body = body.replace(user.username, `<a href="/#/profile/${user.id}">${user.username}</a>`)
+                        }
+                    }
+                    resolve(body)
+                })
+            })
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'getUser'
+        ]),
+        likesCount: function() {
+            return this.likes.length
+        },
+        commentsCount: function() {
+            return this.comments.length
+        },
+        userLiked: function() {
+            return this.likes.find((like) => like.userId == this.getUser.id)
+        },
+        postFocus() {
+            return this.focus && this.getUser.id == this.post.authorId
+        },
+        ascendingComments() {
+            let comment = [...this.comments]
+            comment.sort((a, b) => a.id - b.id)
+            return comment;
+        },
+        descendingComments() {
+            let comment = [...this.comments]
+            comment.sort((a, b) => b.id - a.id)
+            return comment;
+        }
+    },
+    beforeMount: function() {
+        this.axios.get(`/posts?id=${this.postId}`).then((resPost) => {
+            this.post = resPost.data[0]
             this.fetchPostAuthor()
             this.fetchPostComments()
             this.fetchPostLikes()
         })
-    })
-  }
+    }
 }
 </script>
 

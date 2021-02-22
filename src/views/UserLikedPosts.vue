@@ -41,16 +41,13 @@ export default {
         ])
     },
     beforeMount: function() {
-        fetch(`http://localhost:3000/likes?userId=${this.userId}&valid=true`).then((response) => {
-            response.json().then((resLikes) => {
-                for(let like of resLikes) {
-                    if(!this.likedPosts.find((post) => post.id == like.postId)) {
-                        this.likedPosts.push(this.homePosts.find((post) => post.id == like.postId));
-                    }
-                }
-            })
+        this.axios.get(`/likes?userId=${this.userId}&valid=true`).then((resLikes) => {
+            for(let like of resLikes.data) {
+                this.axios.get(`/posts/${like.postId}`).then((resPost) => {
+                    this.likedPosts.push(resPost.data)
+                })
+            }
         })
     }
-
 }
 </script>

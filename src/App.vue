@@ -38,6 +38,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import LoginModal from './views/LoginModal.vue'
+import Cookies from 'js-cookie'
 export default {
   components: { LoginModal },
   methods: {
@@ -48,7 +49,7 @@ export default {
       this.$modal.show('login-register')
     },
     logout: function() {
-      this.$cookies.remove("userId")
+      Cookies.remove("userId")
       this.updateUser({user: ''})
     }
   },
@@ -65,11 +66,9 @@ export default {
     }
   },
   beforeMount: function() {
-    if(this.$cookies.isKey("userId")) {
-      fetch(`http://localhost:3000/users/${this.$cookies.get("userId")}`).then((response) => {
-        response.json().then((resUser) => {
-          this.updateUser({user: resUser});
-        })
+    if(Cookies.get("userId")) {
+      this.axios.get(`/users/${Number(Cookies.get("userId"))}`).then((resUser) => {
+        this.updateUser({user: resUser.data})
       })
     }
   }

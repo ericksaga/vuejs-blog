@@ -31,7 +31,7 @@
                 </router-link>
             </div>
             <div class="col-8"> 
-                <div v-html="post.message"/>
+                <div v-html="postBody"/>
             </div>
         </div>
         <p v-if="post.edited">edited</p>
@@ -72,58 +72,38 @@ export default {
   },
   methods: {
       fetchLikes: function() {
-            fetch(`http://localhost:3000/likes?postId=${this.post.id}`).then((response) => {
-                response.json().then((resLikes) => {
-                    this.likes = resLikes.filter((like) => like.valid);
-                })
-            })  
+          this.axios.get(`/likes?postId=${this.post.id}`).then((resLikes) => {
+              this.likes = resLikes.data.filter((like) => like.valid);
+          }) 
       },
       fetchComments: function() {
-            fetch(`http://localhost:3000/comments?postId=${this.post.id}`).then((response) => {
-                response.json().then((resComments) => {
-                    this.comments = resComments
-                })
-            })
+          this.axios.get(`/comments?postId=${this.post.id}`).then((resComments) => {
+              this.comments = resComments.data
+          })
       },
       fetchAuthor: function() {
-          fetch(`http://localhost:3000/users?id=${this.post.authorId}`).then((response) => {
-                response.json().then((resUser) => {
-                    this.author = resUser[0]
-                    this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
-                })
-            })
+          this.axios.get(`/users?id=${this.post.authorId}`).then((resUser) => {
+              this.author = resUser.data[0]
+              this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
+          })
       },
       likePost: function() {
-          fetch(`http://localhost:3000/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((response) => {
-              response.json().then((resLike) => {
-                  if(resLike.length > 0) {
-                    resLike[0].valid = !resLike[0].valid;
-                    fetch(`http://localhost:3000/likes/${resLike[0].id}`, {
-                        method:'Put',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(resLike[0])
-                    }).then(() => {
-                        this.fetchLikes()
-                    })
-                  } else {
-                      fetch(`http://localhost:3000/likes`, {
-                        method:'Post',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            userId: this.getUser.id,
-                            postId: this.post.id,
-                            valid: true,
-                            creationDate: new Date().toISOString()
-                        })
-                    }).then(() => {
-                        this.fetchLikes()
-                    })
-                  }
-              })
+          this.axios.get(`/likes?postId=${this.post.id}&userId=${this.getUser.id}`).then((resLike) => {
+              if(resLike.data.length > 0) {
+                  resLike.data[0].valid = !resLike.data[0].valid;
+                  this.axios.put(`/likes/${resLike.data[0].id}`, resLike.data[0]).then(() => {
+                      this.fetchLikes()
+                  })
+              } else {
+                  this.axios.post(`/likes`, {
+                      userId: this.getUser.id,
+                      postId: this.post.id,
+                      valid: true,
+                      creationDate: new Date().toISOString()
+                  }).then(() => {
+                      this.fetchLikes()
+                  })
+              }
           })
       }
   },
@@ -139,6 +119,9 @@ export default {
       },
       userLiked: function() {
           return this.likes.find((like) => like.userId == this.getUser.id)
+      },
+      postBody() {
+        return this.post.message.length > 200?this.post.message.slice(0, 200):this.post.message
       }
   },
   beforeMount: function() {

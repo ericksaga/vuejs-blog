@@ -24,6 +24,7 @@
 <script>
 // @ is an alias to /src
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import Cookies from 'js-cookie'
 export default {
   name: 'register-modal',
   components: {
@@ -32,24 +33,42 @@ export default {
   },
   methods: {
     submitRegister: function() {
-      fetch(`http://localhost:3000/users?email=${this.email}`).then((response) => {
-        response.json().then((resUser) => {
-          if(resUser.lenght > 0) {
-            this.$toast.error({
-                title:'Error',
-                message:'El email esta en uso.'
-            })
-          } else {
-            this.$cookies.set("registerUser", {
+      this.axios.get(`/users?email=${this.email}`).then((resUser) => {
+        if(resUser.data.lenght > 0) {
+          this.$toast.error({
+            title:'Error',
+            message:'El email esta en uso.'
+          })
+        } else {
+          let expire1h = 1/24;
+          if(!Cookies.get("registerUser")){
+            Cookies.set("registerUser", {
               email: this.email,
               password: this.password
-            }, "1h");
-            //temporary solution for email form
-            console.log('ok')
-            this.$modal.hide('login-register')
-            this.$router.push({name:'CompleteRegister'})
+            }, {expires: expire1h});
+          } else {
+            Cookies.remove("registerUser")
+            Cookies.set("registerUser", {
+              email: this.email,
+              password: this.password
+            }, {expires: expire1h});
           }
-        })
+          this.axios.post('https://api.emailjs.com/api/v1.0/email/send', {
+            service_id: 'service_jy90qmj',
+            template_id: 'template_ooidvlo',
+            user_id: 'user_tmMKNd0N6HwyyuEJf1CfU',
+            template_params: {
+              'email': this.email,
+              'link': `http://localhost:8080/#/completeRegistration`
+            }
+          }).then(() => {
+            this.$toast.info({
+              title:'Informacion',
+              message:'El Correo ha sido enviado.'
+            })
+            this.$modal.hide('login-register')
+          })
+        }
       })
     }
   },

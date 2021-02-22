@@ -30,17 +30,19 @@
         "authorId": "Integer",
         "postId": "Integer",
         "creationDate": "Date",
-        "message": "String",
-        "likes": [
-            {
-                "userId": "Integer"
-            }
-        ]
+        "message": "String"
     },
     "likes": {
         "id": "Integer",
         "userId": "Integer",
         "postId": "Integer",
+        "valid": "Boolean",
+        "creationDate": "Date"
+    },
+    "commentLikes": {
+        "id": "Integer",
+        "userId": "Integer",
+        "commentId": "Integer",
         "valid": "Boolean",
         "creationDate": "Date"
     }

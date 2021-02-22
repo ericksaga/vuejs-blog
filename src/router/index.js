@@ -15,6 +15,7 @@ import Configuration from '../views/Configuration.vue'
 import ConfigurateUser from '../views/ConfigurateUser.vue'
 import ConfigurateSecurity from '../views/ConfigurateSecurity.vue'
 import CompleteRegister from '../views/CompleteRegister.vue'
+import EditPost from '../views/EditPost.vue'
 
 Vue.use(VueRouter)
 
@@ -36,9 +37,9 @@ const routes = [
     component: CreatePost
   },
   {
-    path: '/createPost/:postId',
+    path: '/editPost/:postId',
     name: 'EditPost',
-    component: CreatePost
+    component: EditPost
   },
   {
     path: '/completeRegistration',

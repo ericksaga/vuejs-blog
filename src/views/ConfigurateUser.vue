@@ -143,36 +143,34 @@ export default {
             'updateUser'
         ]),
         submitUser: function() {
-            fetch(`http://localhost:3000/users?username=${this.newUsername}`).then(response => {
-                response.json().then((res) => {
-                    if(res.length > 0 && res[0].id != this.getUser.id) {
-                        this.$notify({
-                            group: 'foo',
-                            title: 'Usuario en uso',
-                            text: 'El nombre de usuario que coloco ya esta en uso',
-                            type: 'error'
-                        })
-                    } else {
-                        this.updateUser({
-                            user: {
-                                id: this.getUser.id,
-                                email: this.getUser.email,
-                                username: this.newUsername,
-                                firstName: this.newFirstName,
-                                lastName: this.newLastName,
-                                description: this.newDescription,
-                                private: this.privacy,
-                                avatar: this.newAvatar
-                            }
-                        })
-                        this.$router.push({
-                            name: 'Profile',
-                            params: {
-                                userId:this.getUser.id
-                            }
-                        })
-                    }
-                })
+            this.axios.get(`/users?username=${this.newUsername}`).then((resUser) => {
+                if(resUser.data.length > 0 && resUser.data[0].id != this.getUser.id) {
+                    this.$notify({
+                        group: 'foo',
+                        title: 'Usuario en uso',
+                        text: 'El nombre de usuario que coloco ya esta en uso',
+                        type: 'error'
+                    })
+                } else {
+                    this.updateUser({
+                        user: {
+                            id: this.getUser.id,
+                            email: this.getUser.email,
+                            username: this.newUsername,
+                            firstName: this.newFirstName,
+                            lastName: this.newLastName,
+                            description: this.newDescription,
+                            private: this.privacy,
+                            avatar: this.newAvatar
+                        }
+                    })
+                    this.$router.push({
+                        name: 'Profile',
+                        params: {
+                            userId:this.getUser.id
+                        }
+                    })
+                }
             })
         },
         resetInput: function() {

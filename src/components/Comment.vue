@@ -15,7 +15,7 @@
             </div>
             <div class="col-8">
                 <div v-if="!edit">
-                    <div class="float-end" v-if="focus && getUser.id == comment.authorId">
+                    <div class="float-end" v-if="commentFocus">
                         <i class="bi bi-x-square" @click="deleteComment"></i>
                         <i class="bi bi-pencil-square" @click="edit=true"></i>
                     </div>
@@ -29,9 +29,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
-                <!-- <i class="bi bi-hand-thumbs-up-fill"></i> !-->
-                <i class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
+            <div class="col-6" @click="likeComment">
+                <i v-if="userLiked" class="bi bi-hand-thumbs-up-fill"> {{ likesCount }} </i>
+                <i v-else class="bi bi-hand-thumbs-up"> {{ likesCount }}</i>
             </div>
       </div>
     </div>
@@ -55,7 +55,8 @@ export default {
             focus: false,
             edit: false,
             updatedComment: '',
-            avatarSource:''
+            avatarSource:'',
+            commentLikes: []
         }
     },
     computed: {
@@ -63,24 +64,24 @@ export default {
             'getUser'
         ]),
         likesCount: function() {
-            return this.comment.likes.length
+            return this.commentLikes.length
+        },
+        userLiked: function() {
+            return this.commentLikes.find((like) => like.userId == this.getUser.id)
+        },
+        commentFocus() {
+            return this.focus && this.getUser.id == this.comment.authorId
         }
     },
     methods: {
         updateComment: function() {
-            fetch(`http://localhost:3000/comments/${this.comment.id}`, {
-                method:'Put',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: this.comment.id,
-                    authorId: this.comment.authorId,
-                    postId: this.comment.postId,
-                    creationDate: this.comment.creationDate,
-                    message: this.updatedComment,
-                    likes: this.comment.likes
-                })
+            this.axios.put(`/comments/${this.comment.id}`, {
+                id: this.comment.id,
+                authorId: this.comment.authorId,
+                postId: this.comment.postId,
+                creationDate: this.comment.creationDate,
+                message: this.updatedComment,
+                likes: this.comment.likes
             }).then(() => {
                 this.comment.message = this.updatedComment
                 this.edit = false;
@@ -91,21 +92,42 @@ export default {
             this.updatedComment = this.comment.message
         },
         deleteComment: function() {
-            fetch(`http://localhost:3000/comments/${this.comment.id}`, {
-                method:'Delete'
-            }).then(() => {
+            this.axios.delete(`/comments/${this.comment.id}`).then(() => {
                 this.$emit('updateComments')
+            })
+        },
+        fetchCommentLikes() {
+            this.axios.get(`/commentLikes?commentId=${this.comment.id}&valid=true`).then((resLikes) => {
+                this.commentLikes = resLikes.data
+            })
+        },
+        likeComment() {
+            this.axios.get(`/commentLikes?commentId=${this.comment.id}&userId=${this.getUser.id}`).then((resLike) => {
+                if(resLike.data.length > 0) {
+                    resLike.data[0].valid = !resLike.data[0].valid;
+                    this.axios.put(`/commentLikes/${resLike.data[0].id}`, resLike.data[0]).then(() => {
+                        this.fetchCommentLikes()
+                    })
+                } else {
+                    this.axios.post(`/commentLikes`,{
+                        userId: this.getUser.id,
+                        commentId: this.comment.id,
+                        valid: true,
+                        creationDate: new Date().toISOString()
+                    }).then(() => {
+                        this.fetchCommentLikes()
+                    })
+                }
             })
         }
     },
     beforeMount: function() {
         this.updatedComment = this.comment.message
-        fetch(`http://localhost:3000/users?id=${this.comment.authorId}`).then((response) => {
-            response.json().then((resUser) => {
-                this.author = resUser[0];
-                this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
-            })
+        this.axios.get(`/users?id=${this.comment.authorId}`).then((resUser) => {
+            this.author = resUser.data[0]
+            this.avatarSource = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.author.email)}?d=${this.author.avatar?this.author.avatar:'mp'}&&f=y`
         })
+        this.fetchCommentLikes()
     }
 }
 </script>

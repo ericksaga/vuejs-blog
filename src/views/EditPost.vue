@@ -1,14 +1,14 @@
 <template>
-    <div class="createPost container">
-        <h1>Crear post</h1>
+    <div class="editPost container">
+        <h1>Modificar post</h1>
         <div class ="row">  
             <div class="col-12">
-                <ValidationObserver v-slot="{ invalid }">
+                <validation-observer v-slot="{ invalid }">
                     <form>
-                        <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
+                        <validation-provider class="input-group mb3" v-slot="{ errors }" rules="required">
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Titulo" v-model="title">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
-                        </ValidationProvider>
+                        </validation-provider>
                         <div class="text-start">
                             <div class="btn" :class="!preview?'btn-primary':'btn-light'" @click="preview=false">Escribir</div>
                             <div class="btn" :class="preview?'btn-primary':'btn-light'" @click="preview=true">Visualizar</div>
@@ -22,12 +22,13 @@
                             <label class="form-check-label" for="flexCheckDefault">Aceptar comentarios</label>
                         </div>
                         <div class="btn-group float-start" role="group">
-                            <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost">Crear</button>
-                            <button class="btn btn-secondary" type="submit" :disabled="invalid&&getUser" @click="draftPost">Borrador</button>
-                            <button class="btn btn-danger" type="reset" @click="cancelPost">Cancelar</button>
+                            <button class="btn btn-primary" type="submit" :disabled="invalid&&getUser" @click="submitPost" v-if="post.drafted">Publicar</button>
+                            <button class="btn btn-success" type="submit" :disabled="invalid&&getUser" @click="updatePost">Actualizar</button>
+                            <button class="btn btn-secondary" type="reset" @click="cancelPost">Cancelar</button>
+                            <button class="btn btn-danger" type="reset" :disabled="!getUser" @click="deletePost">Eliminar</button>
                         </div>
                     </form>
-                </ValidationObserver>
+                </validation-observer>
             </div>
         </div>
     </div>
@@ -37,12 +38,12 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { mapGetters } from 'vuex'
 export default {
-    name:'create-post',
+    name:'edit-post',
     components: {
         ValidationProvider,
         ValidationObserver
     },
-    data: function() {
+    data() {
         return {
             config: {
                 events: {
@@ -51,6 +52,7 @@ export default {
                     }
                 }
             },
+            postId: this.$route.params.postId,
             post : '',
             postBody: '',
             title: '',
@@ -59,18 +61,13 @@ export default {
         }
     },
     methods: {
-        submitPost: function() {
-            this.axios.post(`/posts`, {
-                authorId: this.getUser.id,
-                title: this.title,
-                message: this.postBody,
-                creationDate: new Date().toISOString(),
-                publicationDate: new Date().toISOString(),
-                edited: false,
-                drafted: false,
-                deleted: false,
-                acceptComments: this.acceptComments,
-            }).then(() => {
+        submitPost() {
+            this.post.message = this.postBody
+            this.post.title = this.title
+            this.post.acceptComments = this.acceptComments
+            this.post.drafted = false
+            this.post.publicationDate = this.post.publicationDate?this.post.publicationDate:new Date().toISOString()
+            this.axios.put(`/posts/${this.postId}`, this.post).then(() => {
                 this.$toast.success({
                     title:'Exito',
                     message:'El post ha sido publicado.'
@@ -83,32 +80,26 @@ export default {
                 })
             })
         },
-        draftPost: function() {
-            this.axios.post(`/posts`, {
-                authorId: this.getUser.id,
-                title: this.title,
-                message: this.postBody,
-                creationDate: new Date().toISOString(),
-                publicationDate: null,
-                edited: false,
-                deleted: false,
-                drafted: true,
-                acceptComments: this.acceptComments,
-            }).then(() => {
+        updatePost() {
+            this.post.message = this.postBody
+            this.post.title = this.title
+            this.post.acceptComments = this.acceptComments
+            this.post.edited = this.post.drafted?false:true
+            this.axios.put(`/posts/${this.postId}`, this.post)
+        },
+        cancelPost() {
+            this.$router.push({name:'MyPosts'})
+        },
+        deletePost() {
+            this.post.drafted = false
+            this.post.deleted = true;
+            this.axios.put(`/posts/${this.postId}`, this.post).then(() => {
                 this.$toast.success({
                     title:'Exito',
-                    message:'El post se ha guardado.'
+                    message:'El post ha sido eliminado.'
                 })
                 this.$router.push({name:'MyPosts'})
-            }, () => {
-                this.$toast.error({
-                    title:'Error',
-                    message:'El post no se ha podido guardar.'
-                })
             })
-        },
-        cancelPost: function() {
-            this.$router.push({name:'MyPosts'})        
         }
     },
     computed: {
@@ -116,7 +107,22 @@ export default {
             'getUser'
         ]),
     },
-    mounted: function() {
+    beforeMount() {
+        this.axios.get(`/posts/${this.postId}`).then((resPost) => {
+            if(this.getUser?.id == resPost.data.authorId) {
+                this.post = resPost.data;
+                this.postBody = resPost.data.message;
+                this.title = resPost.data.title;
+                this.acceptComments = resPost.data.acceptComments;
+            } else {
+                this.$toast.error({
+                    title: 'Error',
+                    message: 'No tiene permiso para modificar este post'
+                })
+            }
+        })
+    },
+    mounted() {
         if(!this.getUser) {
             this.$toast.error({
                 title: 'Error',
