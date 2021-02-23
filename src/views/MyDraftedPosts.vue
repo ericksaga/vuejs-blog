@@ -13,13 +13,57 @@
             </thead>
             <tbody>
                 <post-summary 
-                    v-for="draftedPost in postOrder"
+                    v-for="draftedPost in pageSlice"
                     :key="draftedPost.id"
                     :post="draftedPost"
                 >
                 </post-summary>
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" :class="page <= 0?'disabled':''">
+                    <router-link :to="{
+                            name: 'MyDraftedPosts',
+                            params: {
+                                page: page
+                            }
+                        }" 
+                        class="page-link" :aria-disabled="page <= 0" @click="page--">
+                        <i class="bi bi-arrow-left"></i>
+                    </router-link>
+                </li>
+                <li class="page-item">
+                    <router-link :to="{
+                            name: 'MyDraftedPosts',
+                            params: {
+                                page: page
+                            }
+                        }" class="page-link" v-if="page > 0 " >{{page}}</router-link>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link">{{page + 1}}</a>
+                </li>
+                <li class="page-item">
+                    <router-link :to="{
+                            name: 'MyDraftedPosts',
+                            params: {
+                                page: page + 2
+                            }
+                        }" class="page-link" v-if="page < Math.floor(postOrder.length/25)">{{page + 2}}</router-link>
+                </li>
+                <li class="page-item" :class="page >= Math.floor(postOrder.length/25)?'disabled':''">
+                    <router-link :to="{
+                            name: 'MyDraftedPosts',
+                            params: {
+                                page: page + 2
+                            }
+                        }" class="page-link" :aria-disabled="page >= Math.floor(postOrder.length/25)">
+                        <i class="bi bi-arrow-right"></i>
+                    </router-link>
+                </li>
+            </ul>
+        </nav>
     </div>
 </template>
 
@@ -32,8 +76,16 @@ export default {
     data: function() {
         return {
             posts: {},
-            postOrder: {}
+            postOrder: {},
+            page: 0
         }
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.posts = [...this.getMyDraftedPosts];
+        this.fetchPostsData();
+        this.postOrder = this.creationDateOrder;
+        this.page = Number(to.params.page) - 1
+        next()
     },
     computed: {
         ...mapGetters([
@@ -67,6 +119,9 @@ export default {
         titleOrder() {
             let posts = [...this.posts]
             return posts.sort((a, b) => a.title.localeCompare(b.title))
+        },
+        pageSlice() {
+            return this.postOrder.slice(25*this.page, 25*(this.page+1))
         }
     },
     methods: {

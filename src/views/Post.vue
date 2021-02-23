@@ -1,5 +1,6 @@
 <template>
 <div class="post container">
+    <a @click="$router.back()">Volver al listado</a>
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
             <div class="float-end" v-if="postFocus">
@@ -12,7 +13,8 @@
             <router-link v-if="author.id" :to="{
                 name:'UserPosts',
                 params: {
-                    userId: author.id
+                    userId: author.id,
+                    page: 1
                 }
             }"> 
                 <img alt="user logo" v-bind:src="avatarSource" class="img-thumbnail">
@@ -89,7 +91,8 @@ export default {
             newComment: '',
             focus: false,
             avatarSource: '',
-            ascending: true
+            ascending: true,
+            backPath: ''
         }
     },
     methods: {

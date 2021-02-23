@@ -9,7 +9,8 @@
           <router-link v-if="getUser.id" :to="{
             name:'UserPosts',
             params: {
-              userId: getUser.id
+              userId: getUser.id,
+              page: 1
             }
           }"> 
             {{ getUser.username }}

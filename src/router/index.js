@@ -52,17 +52,17 @@ const routes = [
     component: MyPosts,
     children: [
       {
-        path: 'myPublishedPosts',
+        path: 'myPublishedPosts/:page',
         name: 'MyPublishedPosts',
         component: MyPublishedPosts
       },
       {
-        path: 'myDrafts',
+        path: 'myDrafts/:page',
         name: 'MyDraftedPosts',
         component: MyDraftedPosts
       },
       {
-        path: 'myDeletedPosts',
+        path: 'myDeletedPosts/:page',
         name: 'MyDeletedPosts',
         component: MyDeletedPosts
       }
@@ -75,17 +75,17 @@ const routes = [
     props: true,
     children: [
       {
-        path: 'userPosts',
+        path: 'userPosts/:page',
         name: "UserPosts",
         component: UserPosts
       },
       {
-        path: 'userCommentedPosts',
+        path: 'userCommentedPosts/:page',
         name: "UserCommentedPosts",
         component: UserCommentedPosts
       },
       {
-        path: 'userLikedPosts',
+        path: 'userLikedPosts/:page',
         name: "UserLikedPosts",
         component: UserLikedPosts
       },
