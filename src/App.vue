@@ -33,15 +33,22 @@
     <modal name="login-register">
       <login-modal/>
     </modal>
+    <modal name="reset-password">
+      <reset-modal/>
+    </modal>
     <notifications group="foo" />
   </div>
 </template>
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import LoginModal from './views/LoginModal.vue'
+import ResetModal from './views/ResetModal.vue'
 import Cookies from 'js-cookie'
 export default {
-  components: { LoginModal },
+  components: { 
+    LoginModal,
+    ResetModal
+    },
   methods: {
     ...mapMutations([
       'updateUser'

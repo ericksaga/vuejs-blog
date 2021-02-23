@@ -16,6 +16,7 @@ import ConfigurateUser from '../views/ConfigurateUser.vue'
 import ConfigurateSecurity from '../views/ConfigurateSecurity.vue'
 import CompleteRegister from '../views/CompleteRegister.vue'
 import EditPost from '../views/EditPost.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/completeRegistration',
     name: 'CompleteRegister',
     component: CompleteRegister
+  },
+  {
+    path: '/resetPassword',
+    name: 'ResetPassword',
+    component: ResetPassword
   },
   {
     path: '/myPosts',
