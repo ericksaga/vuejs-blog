@@ -24,7 +24,8 @@
 <script>
 // @ is an alias to /src
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import Cookies from 'js-cookie'
+import CryptoJS from 'crypto-js'
+import env from '../environment'
 export default {
   name: 'register-modal',
   components: {
@@ -33,33 +34,22 @@ export default {
   },
   methods: {
     submitRegister: function() {
+      let info = CryptoJS.AES.encrypt(JSON.stringify({email: this.email, password:this.password}), env.cryptoKey)
+      //console.log(JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(info.toString(), env.cryptoKey))))
       this.axios.get(`/users?email=${this.email}`).then((resUser) => {
-        if(resUser.data.lenght > 0) {
+        if(resUser.data.length > 0) {
           this.$toast.error({
             title:'Error',
             message:'El email esta en uso.'
           })
         } else {
-          let expire1h = 1/24;
-          if(!Cookies.get("registerUser")){
-            Cookies.set("registerUser", {
-              email: this.email,
-              password: this.password
-            }, {expires: expire1h});
-          } else {
-            Cookies.remove("registerUser")
-            Cookies.set("registerUser", {
-              email: this.email,
-              password: this.password
-            }, {expires: expire1h});
-          }
           this.axios.post('https://api.emailjs.com/api/v1.0/email/send', {
             service_id: 'service_jy90qmj',
             template_id: 'template_ooidvlo',
             user_id: 'user_tmMKNd0N6HwyyuEJf1CfU',
             template_params: {
               'email': this.email,
-              'link': `http://localhost:8080/#/completeRegistration`
+              'link': `http://localhost:8080/#/completeRegistration?q=${info}`
             }
           }).then(() => {
             this.$toast.info({

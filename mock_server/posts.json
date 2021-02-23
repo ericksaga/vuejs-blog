@@ -31,24 +31,14 @@
       "id": 3
     },
     {
-      "email": "c@gmail.com",
-      "username": "d",
-      "firstName": "d",
-      "lastName": "d",
-      "description": "good",
-      "private": "",
-      "avatar": "mp",
-      "id": 4
-    },
-    {
       "email": "erickmedina09@gmail.com",
       "username": "ericksaga",
-      "firstName": "erick",
-      "lastName": "m",
-      "description": "casula",
-      "private": true,
+      "firstName": "er",
+      "lastName": "md",
+      "description": "?",
+      "private": "",
       "avatar": "retro",
-      "id": 5
+      "id": 4
     }
   ],
   "pass": [
@@ -66,10 +56,6 @@
     },
     {
       "id": 4,
-      "password": "123456789"
-    },
-    {
-      "id": 5,
       "password": "123456789"
     }
   ],
