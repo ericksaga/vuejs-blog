@@ -7,11 +7,11 @@
                     <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="text" placeholder="Email" v-model="email">
                     <div class="invalid-feedback">{{ errors[0] }}</div>
                 </ValidationProvider>
-                <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
+                <ValidationProvider name="password" class="input-group mb3" v-slot="{ errors }" rules="required">
                     <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Password" v-model="password">
                     <div class="invalid-feedback">{{ errors[0] }}</div>
                 </ValidationProvider>
-                <ValidationProvider class="input-group mb3" v-slot="{ errors }" :rules="'required|validatePassword:'+ password">
+                <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required|validatePassword:@password">
                     <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Confirm password" v-model="confirmPass">
                     <div class="invalid-feedback">{{ errors[0] }}</div>
                 </ValidationProvider>

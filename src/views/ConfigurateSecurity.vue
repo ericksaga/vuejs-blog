@@ -4,11 +4,11 @@
             <div class="col-12">
                 <ValidationObserver v-slot="{ invalid }">
                     <form @submit.prevent="changePassword()">
-                        <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required">
+                        <ValidationProvider name="password" class="input-group mb3" v-slot="{ errors }" rules="required">
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Nueva contraseña" v-model="newPassword">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
                         </ValidationProvider>
-                        <ValidationProvider class="input-group mb3" v-slot="{ errors }" :rules="'required|validatePassword:'+newPassword">
+                        <ValidationProvider class="input-group mb3" v-slot="{ errors }" rules="required|validatePassword:@password">
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Reescriba la contraseña" v-model="newPasswordValidation">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
                         </ValidationProvider>
