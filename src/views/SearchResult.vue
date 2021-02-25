@@ -93,14 +93,18 @@ export default {
             posts: [],
             page: 0,
             searchParam: this.$route.query.search,
-            searchValue: this.$route.query.value
+            searchValue: this.$route.query.value,
+            searchdate1: this.$route.query.date1,
+            searchdate2: this.$route.query.date2
         }
     },
     beforeRouteUpdate (to, from, next) {
         this.fetchPosts();
         this.page = Number(to.params.page) - 1
-        this.searchParam = to.query.search,
+        this.searchParam = to.query.search
         this.searchValue = to.query.value
+        this.searchdate1 = to.query.date1
+        this.searchdate2 = to.query.date2
         next()
     },
     computed: {
@@ -131,12 +135,19 @@ export default {
                     searchPost.push({...post, author: user.username})
                 }
             }
-            this.posts = searchPost.filter(post => {
-                if(post[this.searchParam])
-                    return post[this.searchParam].includes(this.searchValue)
-                else
-                    return false
-            })
+            if(this.searchParam == 'date') {
+                this.posts = searchPost.filter(post => {
+                    let date = post.publicationDate.split('T')[0];
+                    return (date.localeCompare(this.searchdate1) >= 0 && date.localeCompare(this.searchdate2) <= 0)
+                })
+            } else {
+                this.posts = searchPost.filter(post => {
+                    if(post[this.searchParam])
+                        return post[this.searchParam].includes(this.searchValue)
+                    else
+                        return false
+                })
+            }
         }
     },
     beforeMount() {
