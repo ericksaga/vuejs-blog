@@ -54,9 +54,6 @@ export default {
             if(this.rememberMe) {
                 Cookies.set("userId", this.getUser.id, {expires: 30});
             }
-            else {
-                Cookies.set("userId", this.getUser.id);
-            }
             this.loginError = ''
         }, (error) => {
             console.log(error)
