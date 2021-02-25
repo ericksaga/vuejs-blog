@@ -23,8 +23,16 @@ export default {
         return {
             searchOptions: [{name:'Autor', value:'author'}, {name:'Titulo', value:'title'}, {name:'Contenido', value:'message'}, {name:'Fecha', value:'date'}],
             searchItem: '',
-            searchValue: this.$route.query.value,
+            searchValue: '',
         }
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.searchItem = this.searchOptions.find((option) => option.value == to.query.search)
+        if(!this.searchItem) {
+            this.searchItem = this.searchOptions[0]
+        }
+        this.searchValue = to.query.value
+        next()
     },
     methods: {
         search() {

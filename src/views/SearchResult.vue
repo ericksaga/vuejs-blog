@@ -27,6 +27,10 @@
                             name: 'SearchResult',
                             params: {
                                 page: page
+                            },
+                            query: {
+                                search: searchParam,
+                                value: searchValue
                             }
                         }" 
                         class="page-link" :aria-disabled="page <= 0" @click="page--">
@@ -38,6 +42,10 @@
                             name: 'SearchResult',
                             params: {
                                 page: page
+                            },
+                            query: {
+                                search: searchParam,
+                                value: searchValue
                             }
                         }" class="page-link" v-if="page > 0 " >{{page}}</router-link>
                 </li>
@@ -49,6 +57,10 @@
                             name: 'SearchResult',
                             params: {
                                 page: page + 2
+                            },
+                            query: {
+                                search: searchParam,
+                                value: searchValue
                             }
                         }" class="page-link" v-if="page < Math.floor(posts.length/25)">{{page + 2}}</router-link>
                 </li>
@@ -57,6 +69,10 @@
                             name: 'SearchResult',
                             params: {
                                 page: page + 2
+                            },
+                            query: {
+                                search: searchParam,
+                                value: searchValue
                             }
                         }" class="page-link" :aria-disabled="page >= Math.floor(posts.length/25)">
                         <i class="bi bi-arrow-right"></i>
@@ -116,7 +132,10 @@ export default {
                 }
             }
             this.posts = searchPost.filter(post => {
-                return post[this.searchParam].includes(this.searchValue)
+                if(post[this.searchParam])
+                    return post[this.searchParam].includes(this.searchValue)
+                else
+                    return false
             })
         }
     },
