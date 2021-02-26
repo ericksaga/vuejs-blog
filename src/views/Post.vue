@@ -1,5 +1,6 @@
 <template>
 <div class="post container">
+    <a @click="$router.back()">Volver al listado</a>
     <div class="row" @mouseenter="focus=true" @mouseleave="focus= false">
         <div class="col-12">
             <div class="float-end" v-if="postFocus">
@@ -12,7 +13,8 @@
             <router-link v-if="author.id" :to="{
                 name:'UserPosts',
                 params: {
-                    userId: author.id
+                    userId: author.id,
+                    page: 1
                 }
             }"> 
                 <img alt="user logo" v-bind:src="avatarSource" class="img-thumbnail">
@@ -73,6 +75,13 @@ import Comment from '../components/Comment.vue';
 import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
 import CryptoJS from 'crypto-js'
+import * as Pusher from "pusher"
+const pusher = new Pusher({
+  appId: "1156345",
+  key: "be9000b34828b60eba12",
+  secret: "e6fff20c15e91723fa72",
+  cluster: "us2"
+});
 export default {
     components: { 
         Comment,
@@ -89,7 +98,8 @@ export default {
             newComment: '',
             focus: false,
             avatarSource: '',
-            ascending: true
+            ascending: true,
+            backPath: ''
         }
     },
     methods: {
@@ -173,6 +183,13 @@ export default {
                     for(let user of val) {
                         if(user.id) {
                             body = body.replace(user.username, `<a href="/#/profile/${user.id}">${user.username}</a>`)
+                            pusher.trigger("my-channel", "my-event", {
+                                url: `localhost:8080/#/post/${this.post.id}`
+                            }).then((success) => {
+                                console.log(success)
+                            }, (error) => {
+                                console.log(error)
+                            });
                         }
                     }
                     resolve(body)

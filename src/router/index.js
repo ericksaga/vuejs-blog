@@ -16,6 +16,9 @@ import ConfigurateUser from '../views/ConfigurateUser.vue'
 import ConfigurateSecurity from '../views/ConfigurateSecurity.vue'
 import CompleteRegister from '../views/CompleteRegister.vue'
 import EditPost from '../views/EditPost.vue'
+import ResetPassword from '../views/ResetPassword.vue'
+import SearchPost from '../views/SearchPost.vue'
+import SearchResult from '../views/SearchResult.vue'
 
 Vue.use(VueRouter)
 
@@ -47,22 +50,39 @@ const routes = [
     component: CompleteRegister
   },
   {
+    path: '/resetPassword',
+    name: 'ResetPassword',
+    component: ResetPassword
+  },
+  {
+    path: '/searchPost',
+    name: 'SearchPost',
+    component: SearchPost,
+    children: [
+      {
+        path: ':page',
+        name: 'SearchResult',
+        component: SearchResult
+      }
+    ]
+  },
+  {
     path: '/myPosts',
     name: 'MyPosts',
     component: MyPosts,
     children: [
       {
-        path: 'myPublishedPosts',
+        path: 'myPublishedPosts/:page',
         name: 'MyPublishedPosts',
         component: MyPublishedPosts
       },
       {
-        path: 'myDrafts',
+        path: 'myDrafts/:page',
         name: 'MyDraftedPosts',
         component: MyDraftedPosts
       },
       {
-        path: 'myDeletedPosts',
+        path: 'myDeletedPosts/:page',
         name: 'MyDeletedPosts',
         component: MyDeletedPosts
       }
@@ -75,17 +95,17 @@ const routes = [
     props: true,
     children: [
       {
-        path: 'userPosts',
+        path: 'userPosts/:page',
         name: "UserPosts",
         component: UserPosts
       },
       {
-        path: 'userCommentedPosts',
+        path: 'userCommentedPosts/:page',
         name: "UserCommentedPosts",
         component: UserCommentedPosts
       },
       {
-        path: 'userLikedPosts',
+        path: 'userLikedPosts/:page',
         name: "UserLikedPosts",
         component: UserLikedPosts
       },

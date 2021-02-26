@@ -10,7 +10,7 @@
                 <p>Apellido: {{user.lastName}}</p>
                 <router-link to="/configuration" v-if="getUser.id == user.id">Configuracion</router-link>
                 <br>
-                <router-link to="/myPosts/myPublishedPosts" v-if="getUser.id == user.id">Posts</router-link>
+                <router-link to="/myPosts/myPublishedPosts/1" v-if="getUser.id == user.id">Posts</router-link>
             </div>
             <div class="col-8" v-else>
                 El perfil de este usuario es privado.
@@ -24,36 +24,45 @@
         </div>
         <ul class="nav nav-pills nav-fill" v-if="userStatus">
             <li class="nav-item">
-                <router-link :to="{
-                    name:'UserPosts',
-                    params: {
-                        userId: userId
-                    }
-                }" 
-                v-slot="{ isExactActive , navigate }" custom>
-                    <a class="nav-link" :class="isExactActive ?'active':''" aria-current="page" @click="navigate">Posts</a>
+                <router-link :to="'/profile/'+userId+'/userPosts'" v-slot="{ isActive }" custom>
+                    <router-link :to="{
+                        name:'UserPosts',
+                        params: {
+                            userId: userId,
+                            page: 1
+                        }
+                    }"
+                    v-slot="{ navigate }" custom>
+                        <a class="nav-link" :class="isActive ?'active':''" aria-current="page" @click="navigate">Posts</a>
+                    </router-link>
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{
-                    name:'UserCommentedPosts',
-                    params: {
-                        userId: userId
-                    }
-                }"
-                v-slot="{ isExactActive, navigate }" custom>
-                    <a class="nav-link" :class="isExactActive ?'active':''" aria-current="page" @click="navigate">Posts comentados</a>
+                <router-link :to="'/profile/'+userId+'/userCommentedPosts'" v-slot="{ isActive }" custom>
+                    <router-link :to="{
+                        name:'UserCommentedPosts',
+                        params: {
+                            userId: userId,
+                            page: 1
+                        }
+                    }"
+                    v-slot="{ navigate }" custom>
+                        <a class="nav-link" :class="isActive ?'active':''" aria-current="page" @click="navigate">Posts comentados</a>
+                    </router-link>
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{
-                    name:'UserLikedPosts',
-                    params: {
-                        userId: userId
-                    }
-                }"
-                v-slot="{ isExactActive, navigate }" custom>
-                    <a class="nav-link" :class="isExactActive ?'active':''" aria-current="page" @click="navigate">Posts que me gustan</a>
+                <router-link :to="'/profile/'+userId+'/userLikedPosts'" v-slot="{ isActive }" custom>
+                    <router-link :to="{
+                        name:'UserLikedPosts',
+                        params: {
+                            userId: userId,
+                            page: 1
+                        }
+                    }"
+                    v-slot="{ navigate }" custom>
+                        <a class="nav-link" :class="isActive ?'active':''" aria-current="page" @click="navigate">Posts que me gustan</a>
+                    </router-link>
                 </router-link>
             </li>
         </ul>

@@ -13,13 +13,61 @@
             </thead>
             <tbody>
                 <post-summary 
-                    v-for="activePost in likedPosts"
+                    v-for="activePost in pageSlice"
                     :key="activePost.id"
                     :post="activePost"
                 >
                 </post-summary>
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" :class="page <= 0?'disabled':''">
+                    <router-link :to="{
+                            name: 'UserLikedPosts',
+                            params: {
+                                userId: userId,
+                                page: page
+                            }
+                        }"
+                        class="page-link" :aria-disabled="page <= 0" @click="page--">
+                        <i class="bi bi-arrow-left"></i>
+                    </router-link>
+                </li>
+                <li class="page-item">
+                    <router-link :to="{
+                            name: 'UserLikedPosts',
+                            params: {
+                                userId: userId,
+                                page: page
+                            }
+                        }" class="page-link" v-if="page > 0 " >{{page}}</router-link>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link">{{page + 1}}</a>
+                </li>
+                <li class="page-item">
+                    <router-link :to="{
+                            name: 'UserLikedPosts',
+                            params: {
+                                userId: userId,
+                                page: page + 2
+                            }
+                        }" class="page-link" v-if="page < Math.floor(likedPosts.length/25)">{{page + 2}}</router-link>
+                </li>
+                <li class="page-item" :class="page >= Math.floor(likedPosts.length/25)?'disabled':''">
+                    <router-link :to="{
+                            name: 'UserLikedPosts',
+                            params: {
+                                userId: userId,
+                                page: page + 2
+                            }
+                        }" class="page-link" :aria-disabled="page >= Math.floor(likedPosts.length/25)">
+                        <i class="bi bi-arrow-right"></i>
+                    </router-link>
+                </li>
+            </ul>
+        </nav>
     </div>
 </template>
 
@@ -32,22 +80,41 @@ export default {
     data: function() {
         return {
             userId: this.$route.params.userId,
-            likedPosts: []
+            likedPosts: [],
+            page: 0
         }
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.page = Number(to.params.page) - 1
+        next()
     },
     computed: {
         ...mapGetters([
             'homePosts'
-        ])
+        ]),
+        sortedPosts() {
+            let posts = [...this.likedPosts]
+            return posts.sort((a, b) => {
+                let aDate = new Date(a.publicationDate)
+                let bDate = new Date(b.publicationDate)
+                return bDate - aDate
+            })
+        },
+        pageSlice() {
+            return this.sortedPosts.slice(25*this.page, 25*(this.page + 1))
+        }
+    },
+    methods: {
+        async fetchLikedPosts() {
+            let likes = await this.axios.get(`/likes?userId=${this.userId}&valid=true`)
+            for(let like of likes.data) {
+                let post = await this.axios.get(`/posts/${like.postId}`)
+                this.likedPosts.push(post.data)
+            }
+        }
     },
     beforeMount: function() {
-        this.axios.get(`/likes?userId=${this.userId}&valid=true`).then((resLikes) => {
-            for(let like of resLikes.data) {
-                this.axios.get(`/posts/${like.postId}`).then((resPost) => {
-                    this.likedPosts.push(resPost.data)
-                })
-            }
-        })
+        this.fetchLikedPosts()
     }
 }
 </script>

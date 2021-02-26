@@ -13,6 +13,7 @@
                             <input class="form-control" :class="[errors[0]?'is-invalid':'']" type="password" placeholder="Password" v-model="password">
                             <div class="invalid-feedback">{{ errors[0] }}</div>
                         </ValidationProvider>
+                        <a @click="resetPasswordModal">Olvide mi contraseña</a>
                         <div class="form-check text-start">
                             <input class="form-check-input" type="checkbox" v-model="rememberMe" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
@@ -53,14 +54,15 @@ export default {
             if(this.rememberMe) {
                 Cookies.set("userId", this.getUser.id, {expires: 30});
             }
-            else {
-                Cookies.set("userId", this.getUser.id);
-            }
             this.loginError = ''
         }, (error) => {
             console.log(error)
             this.loginError = error
         })
+    },
+    resetPasswordModal() {
+        this.$modal.show('reset-password')
+        this.$modal.hide('login-register')
     }
   },
   computed: {

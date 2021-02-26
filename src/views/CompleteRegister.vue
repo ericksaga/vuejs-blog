@@ -129,7 +129,7 @@
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapActions } from 'vuex'
 import CryptoJS from 'crypto-js'
-import Cookies from 'js-cookie'
+import env from '../environment'
 export default {
     name:'complete-register',
     components: {
@@ -147,6 +147,7 @@ export default {
             privacy: '',
             avatarSourceRoot: '',
             newAvatar: '',
+            userInfo: this.$route.query.q
         }
     },
     computed: {
@@ -193,19 +194,13 @@ export default {
         }
     },
     beforeMount: function() {
-        if(!Cookies.get("registerUser")) {
-            this.$toast.error({
-                title:'Error',
-                message:'El registro expiro.'
-            })
-            this.$router.push({name:'Home'})
-        }
-        else {
-            this.email = Cookies.getJSON("registerUser").email
-            this.password = Cookies.getJSON("registerUser").password
-            this.avatarSourceRoot = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.email)}?f=y&&d=`
-            this.resetInput();
-        }
+        this.userInfo = this.userInfo.replaceAll(' ', '+')
+        console.log(this.userInfo)
+        let user = JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(this.userInfo, env.cryptoKey)))
+        this.email = user.email
+        this.password = user.password
+        this.avatarSourceRoot = `https://www.gravatar.com/avatar/${CryptoJS.MD5(this.email)}?f=y&&d=`
+        this.resetInput();
     }
 }
 </script>

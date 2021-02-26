@@ -4,22 +4,66 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th @click="postOrder = titleOrder">Titulo</th>
-                    <th @click="postOrder = commentOrder">Cantidad de comentarios</th>
-                    <th @click="postOrder = likeOrder">Cantidad de likes</th>
-                    <th @click="postOrder = creationDateOrder">Fecha de creacion</th>
-                    <th @click="postOrder = publishDateOrder">Fecha de publicacion</th>
+                    <th @click="postOrder = titleOrder;page=0">Titulo</th>
+                    <th @click="postOrder = commentOrder;page=0">Cantidad de comentarios</th>
+                    <th @click="postOrder = likeOrder;page=0">Cantidad de likes</th>
+                    <th @click="postOrder = creationDateOrder;page=0">Fecha de creacion</th>
+                    <th @click="postOrder= publishDateOrder;page=0">Fecha de publicacion</th>
                 </tr>
             </thead>
             <tbody>
                 <post-summary 
-                    v-for="activePost in postOrder"
+                    v-for="activePost in pageSlice"
                     :key="activePost.id"
                     :post="activePost"
                 >
                 </post-summary>
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" :class="page <= 0?'disabled':''">
+                    <router-link :to="{
+                            name: 'MyPublishedPosts',
+                            params: {
+                                page: page
+                            }
+                        }" 
+                        class="page-link" :aria-disabled="page <= 0" @click="page--">
+                        <i class="bi bi-arrow-left"></i>
+                    </router-link>
+                </li>
+                <li class="page-item">
+                    <router-link :to="{
+                            name: 'MyPublishedPosts',
+                            params: {
+                                page: page
+                            }
+                        }" class="page-link" v-if="page > 0 " >{{page}}</router-link>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link">{{page + 1}}</a>
+                </li>
+                <li class="page-item">
+                    <router-link :to="{
+                            name: 'MyPublishedPosts',
+                            params: {
+                                page: page + 2
+                            }
+                        }" class="page-link" v-if="page < Math.floor(postOrder.length/25)">{{page + 2}}</router-link>
+                </li>
+                <li class="page-item" :class="page >= Math.floor(postOrder.length/25)?'disabled':''">
+                    <router-link :to="{
+                            name: 'MyPublishedPosts',
+                            params: {
+                                page: page + 2
+                            }
+                        }" class="page-link" :aria-disabled="page >= Math.floor(postOrder.length/25)">
+                        <i class="bi bi-arrow-right"></i>
+                    </router-link>
+                </li>
+            </ul>
+        </nav>
     </div>
 </template>
 
@@ -31,9 +75,17 @@ export default {
     name:'published-posts',
     data: function() {
         return {
-            posts: {},
-            postOrder: {}
+            posts: [],
+            postOrder: [],
+            page: 0
         }
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.posts = [...this.getUserPosts];
+        this.fetchPostsData();
+        this.postOrder = this.creationDateOrder;
+        this.page = Number(to.params.page) - 1
+        next()
     },
     computed: {
         ...mapGetters([
@@ -67,6 +119,9 @@ export default {
         titleOrder() {
             let posts = [...this.posts]
             return posts.sort((a, b) => a.title.localeCompare(b.title))
+        },
+        pageSlice() {
+            return this.postOrder.slice(25*this.page, 25*(this.page+1))
         }
     },
     methods: {

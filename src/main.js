@@ -18,6 +18,7 @@ require('froala-editor/css/froala_editor.pkgd.min.css')
 require('froala-editor/css/froala_style.min.css')
 
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'
+import 'vue2-datepicker/index.css';
 
 Vue.config.productionTip = false
 Vue.use(VModal)
