@@ -75,6 +75,13 @@ import Comment from '../components/Comment.vue';
 import { VueEditor } from 'vue2-editor'
 import { mapGetters } from 'vuex';
 import CryptoJS from 'crypto-js'
+import * as Pusher from "pusher"
+const pusher = new Pusher({
+  appId: "1156345",
+  key: "be9000b34828b60eba12",
+  secret: "e6fff20c15e91723fa72",
+  cluster: "us2"
+});
 export default {
     components: { 
         Comment,
@@ -176,6 +183,13 @@ export default {
                     for(let user of val) {
                         if(user.id) {
                             body = body.replace(user.username, `<a href="/#/profile/${user.id}">${user.username}</a>`)
+                            pusher.trigger("my-channel", "my-event", {
+                                url: `localhost:8080/#/post/${this.post.id}`
+                            }).then((success) => {
+                                console.log(success)
+                            }, (error) => {
+                                console.log(error)
+                            });
                         }
                     }
                     resolve(body)

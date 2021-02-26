@@ -44,6 +44,10 @@ import { mapGetters, mapMutations } from 'vuex'
 import LoginModal from './views/LoginModal.vue'
 import ResetModal from './views/ResetModal.vue'
 import Cookies from 'js-cookie'
+import Pusher from 'pusher-js';
+const pusher = new Pusher('be9000b34828b60eba12', {
+  cluster: 'us2',
+});
 export default {
   components: { 
     LoginModal,
@@ -69,7 +73,19 @@ export default {
   watch: {
     getUser: function() {
       if(this.getUser) {
+        console.log('ok')
         this.$modal.hide('login-register')
+        const channel = pusher.subscribe('my-channel');
+        channel.bind('my-event', function (data) {
+          this.$toast.info({
+            title:'Informacion',
+            message:`Ha sido comentado en el siguiente post ${data.url}`
+          })
+          console.log(data)
+          console.log(data.url)
+        }, { $toast: this.$toast });
+      } else {
+        pusher.unsubscribe('my-channel');
       }
     }
   },

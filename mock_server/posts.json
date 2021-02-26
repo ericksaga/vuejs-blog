@@ -185,10 +185,34 @@
     {
       "authorId": 1,
       "postId": 3,
-      "creationDate": "2021-02-24T19:10:14.188Z",
-      "message": "<p>@klk</p>",
+      "creationDate": "2021-02-26T00:01:55.386Z",
+      "message": "<p><a href=\"/#/profile/1\">@a</a></p>",
       "likes": [],
       "id": 10
+    },
+    {
+      "authorId": 1,
+      "postId": 3,
+      "creationDate": "2021-02-26T00:29:49.809Z",
+      "message": "<p><a href=\"/#/profile/1\">@a</a></p>",
+      "likes": [],
+      "id": 11
+    },
+    {
+      "authorId": 1,
+      "postId": 3,
+      "creationDate": "2021-02-26T00:47:04.591Z",
+      "message": "<p><a href=\"/#/profile/1\">@a</a></p>",
+      "likes": [],
+      "id": 12
+    },
+    {
+      "authorId": 1,
+      "postId": 3,
+      "creationDate": "2021-02-26T00:57:24.467Z",
+      "message": "<p><a href=\"/#/profile/1\">@a</a></p>",
+      "likes": [],
+      "id": 13
     }
   ],
   "likes": [
